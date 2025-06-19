@@ -2,7 +2,7 @@
 Copyright © 2025 Chun Hei Michael Chan, MIPLab EPFL
 """
 
-from ..utils import *
+from flowgsp.utils import *
 from typing import Union
 
 def create_cycle_graph(N:Union[int, tuple], graph_type:Union[str, int]):

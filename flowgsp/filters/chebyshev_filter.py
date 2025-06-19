@@ -2,7 +2,7 @@
 Copyright © 2025 Chun Hei Michael Chan, MIPLab EPFL
 """
 
-from ..utils import *
+from flowgsp.utils import *
 from .graph_filter import GraphFilter
 
 class ChebyshevFilter(GraphFilter):

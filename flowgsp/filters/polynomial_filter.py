@@ -5,7 +5,7 @@ Copyright © 2025 Chun Hei Michael Chan, MIPLab EPFL
 # TODO: Add implementation of "Design of polynomial approximated filters for signals on directed graphs"
 # 10.1109/GlobalSIP.2017.8309036
 
-from ..utils import *
+from flowgsp.utils import *
 from typing import Union
 from .graph_filter import GraphFilter
 

@@ -31,10 +31,6 @@ import networkx as nx
 import cv2
 import pandas as pd
 import seaborn as sns
-import netplotbrain
-
-from nilearn.plotting import plot_epi, show
-from nilearn.connectome import ConnectivityMeasure
 
 from joblib import Parallel, delayed
 

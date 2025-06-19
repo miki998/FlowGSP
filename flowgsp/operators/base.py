@@ -2,7 +2,7 @@
 Copyright © 2025 Chun Hei Michael Chan, MIPLab EPFL
 """
 
-from ..utils import np, hermitian
+from flowgsp.utils import np, hermitian
 
 class Operator:
     """

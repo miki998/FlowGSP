@@ -2,8 +2,8 @@
 Copyright © 2025 Chun Hei Michael Chan, MIPLab EPFL
 """
 
-from ..utils import *
-from ..operators import Adjacency, Laplacian, AdvectionDiffusion
+from flowgsp.utils import *
+from flowgsp.operators import Adjacency, Laplacian
 
 class Graph:
     """

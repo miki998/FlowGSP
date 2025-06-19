@@ -2,7 +2,7 @@
 Copyright © 2024 Chun Hei Michael Chan, MIPLab EPFL
 """
 
-from ..utils import *
+from flowgsp.utils import *
 from scipy import linalg
 
 def find_best_pair(A:np.ndarray, k:np.ndarray, vl:np.ndarray, 

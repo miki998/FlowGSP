@@ -2,7 +2,7 @@
 Copyright © 2024 Chun Hei Michael Chan, MIPLab EPFL
 """
 
-from ..utils import *
+from flowgsp.utils import *
 
 def combine_graphs(A: np.ndarray, B: np.ndarray, nodes_listA: list, nodes_listB: list):
     """
