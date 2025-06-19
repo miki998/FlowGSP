@@ -2,7 +2,7 @@
 Copyright © 2025 Chun Hei Michael Chan, MIPLab EPFL
 """
 
-from flowgsp.utils import np, hermitian
+from ..utils import np, hermitian
 from .base import Operator
 from .jordan_destroy import destroy_jordan_blocks_laplacian
 from typing import Optional
@@ -20,7 +20,7 @@ class Laplacian(Operator):
         if normalize is not None:
             if normalize not in ['right', 'left', 'symmetric']:
                 raise ValueError("normalize must be one of ['right', 'left', 'symmetric']")
-            self.normalize_operator(order=normalize)
+            self.params['normalize'] = normalize
         self.compute_basis(in_degree=in_degree)
 
     def compute_basis(self, in_degree:bool=True):
@@ -28,7 +28,9 @@ class Laplacian(Operator):
         Compute the basis for the Laplacian operator.
         The basis is computed as the eigenvectors of the Laplacian matrix.
         """
+        self.graph.adj_matrix = self.normalize_operator(self.graph.adj_matrix, order=self.params['normalize'])
         self.M = self.compute_directed_laplacian(self.graph.adj_matrix, in_degree=in_degree)
+        
         if self.is_symmetric():
             self.V, self.U = np.linalg.eig(self.M)
         else:

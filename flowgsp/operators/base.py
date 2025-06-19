@@ -2,7 +2,7 @@
 Copyright © 2025 Chun Hei Michael Chan, MIPLab EPFL
 """
 
-from flowgsp.utils import np, hermitian
+from ..utils import np, hermitian
 
 class Operator:
     """
@@ -80,43 +80,45 @@ class Operator:
         ret = self.U @ coef
         return ret
 
-    def normalize_operator(self, order="left"):
+    def normalize_operator(self, A:np.ndarray, order:str="left"):
         """
         Normalize the operator matrix by in-degrees / out-degrees / symmetric
 
         Parameters
         ----------
+        A : numpy.ndarray
+            The operator matrix to be normalized.
         order : str
             The normalization method. Can be "right", "left", or "symmetric".
 
         Returns
         -------
-        normA : np.ndarray
-            The normalized adjacency matrix
+        normA : numpy.ndarray
+            The normalized operator matrix.
         """
-        if np.any(self.M.imag != 0):
+        if np.any(A.imag != 0):
             raise ValueError("Complex values in adjacency matrix")
 
         if order == "right":
-            outdegrees = np.sum(self.M, axis=0)
+            outdegrees = np.sum(A, axis=0)
             factors_in = np.diag(np.divide(1, outdegrees, where=np.abs(outdegrees) > 1e-10))
-            normA = self.M @ factors_in
+            normA = A @ factors_in
 
         if order == "left":
-            indegrees = np.sum(self.M, axis=1)
+            indegrees = np.sum(A, axis=1)
             factors_out = np.diag(np.divide(1, indegrees, where=np.abs(indegrees) > 1e-10))
-            normA = factors_out @ self.M
+            normA = factors_out @ A
 
         if order == "symmetric":
-            indegrees = np.sum(self.M, axis=1)
-            outdegrees = np.sum(self.M, axis=0)
+            indegrees = np.sum(A, axis=1)
+            outdegrees = np.sum(A, axis=0)
 
             indegrees = np.sqrt(np.abs(indegrees))
             outdegrees = np.sqrt(np.abs(outdegrees))
 
             factors_in = np.diag(np.divide(1, indegrees, where=np.abs(indegrees) > 1e-10))
             factors_out = np.diag(np.divide(1, outdegrees, where=np.abs(outdegrees) > 1e-10))
-            normA = factors_out @ self.M @ factors_in
+            normA = factors_out @ A @ factors_in
 
         self.params["normalization"] = order
 
