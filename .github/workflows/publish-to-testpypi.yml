@@ -18,8 +18,8 @@ jobs:
         python-version: "3.9"
 
     - name: Install build tools
-      run: |
-        pip install build twine
+      run: | 
+        pip install build twine setuptools setuptools_scm
 
     - name: Build package
       run: |
