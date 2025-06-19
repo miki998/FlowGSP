@@ -148,6 +148,7 @@ def directed_variation(signal:np.ndarray, A:np.ndarray, normalize:bool=False):
     assert signal.shape[0] == A.shape[0], "Signal s and adjacency matrix A must have the same number of nodes"
     assert np.isrealobj(signal), "Signal s must be real"
     
+    div = 1
     if normalize:
         div = np.linalg.norm(signal)
         if div < 1e-10:
