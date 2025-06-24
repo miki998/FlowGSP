@@ -2,7 +2,7 @@
 Copyright © 2025 Chun Hei Michael Chan, MIPLab EPFL
 """
 
-from ..utils import np, hermitian
+from flowgsp.utils import np, hermitian
 
 class Operator:
     """
@@ -16,6 +16,7 @@ class Operator:
         self.name = name
         self.params = params if params is not None else {}
 
+        self.params['normalize'] = None  # Normalization method for the operator
         self.M = None # Matrix of the operator
         self.U = None # Fourier basis
         self.V = None # Eigenvalues of the operator
@@ -99,17 +100,17 @@ class Operator:
         if np.any(A.imag != 0):
             raise ValueError("Complex values in adjacency matrix")
 
-        if order == "right":
+        elif order == "right":
             outdegrees = np.sum(A, axis=0)
             factors_in = np.diag(np.divide(1, outdegrees, where=np.abs(outdegrees) > 1e-10))
             normA = A @ factors_in
 
-        if order == "left":
+        elif order == "left":
             indegrees = np.sum(A, axis=1)
             factors_out = np.diag(np.divide(1, indegrees, where=np.abs(indegrees) > 1e-10))
             normA = factors_out @ A
 
-        if order == "symmetric":
+        elif order == "symmetric":
             indegrees = np.sum(A, axis=1)
             outdegrees = np.sum(A, axis=0)
 
@@ -120,7 +121,9 @@ class Operator:
             factors_out = np.diag(np.divide(1, outdegrees, where=np.abs(outdegrees) > 1e-10))
             normA = factors_out @ A @ factors_in
 
-        self.params["normalization"] = order
+        elif order is None:
+            normA = A
+        self.params["normalize"] = order
 
         return normA
 

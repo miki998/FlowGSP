@@ -2,7 +2,7 @@
 Copyright © 2025 Chun Hei Michael Chan, MIPLab EPFL
 """
 
-from ..utils import np, hermitian
+from flowgsp.utils import np, hermitian
 from .base import Operator
 from .jordan_destroy import destroy_jordan_blocks_laplacian
 from typing import Optional

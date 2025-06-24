@@ -44,13 +44,13 @@ class Graph:
     def add_node(self, n, **attrs):
         self.G.add_node(n, **attrs)
     
-    def draw(self, ax:matplotlib.axes.Axes=None, arrow_size:int=10, arrow_width:int=2, **kwds):
+    def draw(self, axes:matplotlib.axes.Axes=None, arrow_size:int=10, arrow_width:int=2, **kwds):
         """
         Draw the directed graph using NetworkX's draw function.
         If no axes are provided, a new figure and axes are created.
         """
-        if ax is None:
-            fig, ax = plt.subplots(figsize=(10, 10))
+        if axes is None:
+            fig, axes = plt.subplots(figsize=(10, 10))
         
         # Separate symmetric (bidirectional) and asymmetric (unidirectional) edges
         edges = list(self.G.edges())
@@ -63,23 +63,23 @@ class Graph:
                 asymmetric_edges.add((u, v))
 
         # Draw nodes
-        nx.draw_networkx_nodes(self.G, pos=self.pos, ax=ax, **kwds)
+        nx.draw_networkx_nodes(self.G, pos=self.pos, ax=axes, **kwds)
 
         # Draw symmetric edges (bidirectional) in one color/style
-        nx.draw_networkx_edges(self.G, pos=self.pos, edgelist=list(symmetric_edges), ax=ax, 
+        nx.draw_networkx_edges(self.G, pos=self.pos, edgelist=list(symmetric_edges), ax=axes, 
                        edge_color='tab:gray', arrows=False)
 
         # Draw asymmetric edges (unidirectional) in another color/style
-        nx.draw_networkx_edges(self.G, pos=self.pos, edgelist=list(asymmetric_edges), ax=ax, 
+        nx.draw_networkx_edges(self.G, pos=self.pos, edgelist=list(asymmetric_edges), ax=axes, 
                        edge_color='tab:red', arrows=True, connectionstyle='arc3,rad=0.0', 
                        arrowsize=arrow_size, width=arrow_width)
 
         # Draw labels if requested
         if kwds.get("with_labels", False):
-            nx.draw_networkx_labels(self.G, pos=self.pos, ax=ax)
+            nx.draw_networkx_labels(self.G, pos=self.pos, ax=axes)
 
     def draw_signal(self, signal:Optional[np.ndarray]=None, cmap:Optional[colors.Colormap]=None, 
-               scale:int=100, ax:matplotlib.axes.Axes=None, scolor:Optional[list]=["red", "blue"], 
+               scale:int=100, axes:matplotlib.axes.Axes=None, scolor:Optional[list]=["red", "blue"], 
                colorbar:bool=False, nodetype:bool="size", **kwds):
         """
         Visualize a signal on a directed graph.
@@ -125,8 +125,8 @@ class Graph:
         None
         
         """
-        if ax is None:
-            fig, ax = plt.subplots(figsize=(10, 10))
+        if axes is None:
+            fig, axes = plt.subplots(figsize=(10, 10))
 
         # Catching case of poor signal input
         if signal is None:
@@ -152,7 +152,7 @@ class Graph:
             nx.draw(self.G,arrows=True,
                     node_color=signal,
                     pos=self.pos,
-                    ax=ax,
+                    ax=axes,
                     cmap=cmap, 
                     **kwds)
         elif nodetype == "size":
@@ -160,7 +160,7 @@ class Graph:
                     node_size=node_values,
                     node_color=node_color,
                     pos=self.pos,
-                    ax=ax,
+                    ax=axes,
                     cmap=cmap, 
                     **kwds)
         else:
@@ -184,11 +184,9 @@ class Graph:
             self.operator = Adjacency(self, **kwargs)
         elif name == 'laplacian':
             self.operator = Laplacian(self, **kwargs)
-        elif name == 'advection_diffusion':
-            self.operator = AdvectionDiffusion(self, **kwargs)
         else:
             raise ValueError(f"Unknown operator name: {name} \
-                             (must be one of ['adjacency', 'laplacian', 'advection_diffusion'])")
+                             (must be one of ['adjacency', 'laplacian'])")
 
     def __repr__(self):
         return f"<Current Operator(name={self.name}, num_nodes={self.G.number_of_nodes()}, num_edges={self.G.number_of_edges()})>"
