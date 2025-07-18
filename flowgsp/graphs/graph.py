@@ -19,8 +19,14 @@ class Graph:
             self.pos = pos if pos is not None else nx.kamada_kawai_layout(G)
 
         elif adj_matrix is not None:
+            if np.allclose(adj_matrix, hermitian(adj_matrix)):
+                self.G = nx.Graph()
+            else:
+                self.G = nx.DiGraph()
             self.from_adjacency_matrix(adj_matrix)
             self.adj_matrix = adj_matrix
+            self.pos = pos if pos is not None else nx.kamada_kawai_layout(self.G)
+            
         else:
             raise ValueError("Either a graph (G) or an adjacency matrix (adj_matrix) must be provided." \
             "Careful not to pass both at the same time, as it will raise an error.")
@@ -34,9 +40,14 @@ class Graph:
         num_nodes = adj_matrix.shape[0]
         self.G.add_nodes_from(range(num_nodes))
         for i in range(num_nodes):
-            for j in range(i, num_nodes):
-                if adj_matrix[i, j] != 0:
-                    self.G.add_edge(i, j, weight=adj_matrix[i, j])
+            if isinstance(self.G, nx.DiGraph):
+                for j in range(num_nodes):
+                    if adj_matrix[i, j] != 0:
+                        self.G.add_edge(i, j, weight=adj_matrix[i, j])
+            else:
+                for j in range(i, num_nodes):
+                    if adj_matrix[i, j] != 0:
+                        self.G.add_edge(i, j, weight=adj_matrix[i, j])
 
     def add_edge(self, u, v, **attrs):
         self.G.add_edge(u, v, **attrs)
