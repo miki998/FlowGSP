@@ -1,0 +1,16 @@
+{
+    "Title": "Test polar decomposition of adjacency and laplacian",
+    "Description": "compute polar decomposition of adjacency and laplacian matrices of cycle and usa graphs",
+    "Type": "arrays",
+    "Source": "self",
+    "Examples": "adjacency cycle - adjacency usa - laplacian cycle - laplacian usa",
+    "Typeset": {
+        "Type": "array",
+        "Items": {
+            "Type": "array",
+            "Items": {
+                "Type": "number"
+            }
+        }
+    }
+}

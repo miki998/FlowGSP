@@ -1,0 +1,16 @@
+{
+    "Title": "Test directed laplacian indegree",
+    "Description": "compute directed indegree (standard) laplacian from adjacency matrix",
+    "Type": "arrays",
+    "Source": "self",
+    "Examples": "adjacency cycle - adjacency usa - laplacian cycle - laplacian usa",
+    "Typeset": {
+        "Type": "array",
+        "Items": {
+            "Type": "array",
+            "Items": {
+                "Type": "number"
+            }
+        }
+    }
+}

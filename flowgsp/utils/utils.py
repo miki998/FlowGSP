@@ -6,6 +6,7 @@ import os
 import os.path as op
 import sys
 import pickle
+import warnings
 from tqdm import tqdm
 from copy import deepcopy
 from typing import Optional
@@ -28,7 +29,6 @@ from matplotlib.pyplot import cm
 
 import networkx as nx
 
-import cv2
 import pandas as pd
 import seaborn as sns
 

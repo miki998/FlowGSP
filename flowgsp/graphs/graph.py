@@ -2,7 +2,7 @@
 Copyright © 2025 Chun Hei Michael Chan, MIPLab EPFL
 """
 
-from flowgsp.utils import *
+from flowgsp.utils import np, nx, matplotlib, plt, colors, hermitian, Optional, cm
 from flowgsp.operators import Adjacency, Laplacian
 
 class Graph:
@@ -26,7 +26,7 @@ class Graph:
             self.from_adjacency_matrix(adj_matrix)
             self.adj_matrix = adj_matrix
             self.pos = pos if pos is not None else nx.kamada_kawai_layout(self.G)
-            
+
         else:
             raise ValueError("Either a graph (G) or an adjacency matrix (adj_matrix) must be provided." \
             "Careful not to pass both at the same time, as it will raise an error.")
@@ -55,7 +55,29 @@ class Graph:
     def add_node(self, n, **attrs):
         self.G.add_node(n, **attrs)
     
-    def draw(self, axes:matplotlib.axes.Axes=None, arrow_size:int=10, arrow_width:int=2, **kwds):
+    # Set the operator for spectral analysis
+    def set_operator(self, name='adjacency', **kwargs):
+        """
+        Returns the operator associated with the graph.
+        """
+        if self.G is None:
+            raise ValueError("Graph is not initialized. Please provide a valid graph.")
+        if self.adj_matrix is None:
+            raise ValueError("Adjacency matrix is not initialized. Please provide a valid adjacency matrix or a Graph.")
+        
+        self.name = name
+        if name == 'adjacency':
+            self.operator = Adjacency(self, **kwargs)
+        elif name == 'laplacian':
+            self.operator = Laplacian(self, **kwargs)
+        else:
+            raise ValueError(f"Unknown operator name: {name} \
+                             (must be one of ['adjacency', 'laplacian'])")
+
+    # Draw methods
+    def draw(self, axes:matplotlib.axes.Axes=None, arrow_size:int=10, arrow_width:int=2, 
+             symmetric_color='tab:gray', asymmetric_color='tab:red',
+             **kwds):
         """
         Draw the directed graph using NetworkX's draw function.
         If no axes are provided, a new figure and axes are created.
@@ -78,11 +100,11 @@ class Graph:
 
         # Draw symmetric edges (bidirectional) in one color/style
         nx.draw_networkx_edges(self.G, pos=self.pos, edgelist=list(symmetric_edges), ax=axes, 
-                       edge_color='tab:gray', arrows=False)
+                       edge_color=symmetric_color, arrows=False)
 
         # Draw asymmetric edges (unidirectional) in another color/style
         nx.draw_networkx_edges(self.G, pos=self.pos, edgelist=list(asymmetric_edges), ax=axes, 
-                       edge_color='tab:red', arrows=True, connectionstyle='arc3,rad=0.0', 
+                       edge_color=asymmetric_color, arrows=True, connectionstyle='arc3,rad=0.0', 
                        arrowsize=arrow_size, width=arrow_width)
 
         # Draw labels if requested
@@ -91,7 +113,10 @@ class Graph:
 
     def draw_signal(self, signal:Optional[np.ndarray]=None, cmap:Optional[colors.Colormap]=None, 
                scale:int=100, axes:matplotlib.axes.Axes=None, scolor:Optional[list]=["red", "blue"], 
-               colorbar:bool=False, nodetype:bool="size", **kwds):
+               colorbar:bool=False, nodetype:bool="size", arrow_size:int=10, arrow_width:int=2, 
+               un_arrow_width:int=2, 
+               symmetric_color='tab:gray', asymmetric_color='tab:red',
+               **kwds):
         """
         Visualize a signal on a directed graph.
 
@@ -150,6 +175,9 @@ class Graph:
         if cmap is None:
             node_color = [scolor[0] if nd > 0 else scolor[1] for nd in signal]
         else:
+            if isinstance(cmap, str):
+                cmap = cm.get_cmap('viridis')
+
             normalized_values = signal - signal.min()
             if np.allclose(normalized_values, 0):
                 print("Signal is constant, normalizing to avoid division by zero.")
@@ -158,46 +186,95 @@ class Graph:
                 normalized_values /= normalized_values.max()
             node_color = [cmap(normalized_values[k]) for k in range(len(normalized_values))]
             
+        # Separate symmetric (bidirectional) and asymmetric (unidirectional) edges
+        edges = list(self.G.edges())
+        symmetric_edges = set()
+        asymmetric_edges = set()
+        for u, v in edges:
+            if (v, u) in edges and (v, u) not in symmetric_edges:
+                symmetric_edges.add((u, v))
+            elif (v, u) not in edges:
+                asymmetric_edges.add((u, v))
+
         node_values = scale * np.abs(signal)
         if nodetype == "color":
-            nx.draw(self.G,arrows=True,
-                    node_color=signal,
-                    pos=self.pos,
-                    ax=axes,
-                    cmap=cmap, 
-                    **kwds)
+            # Draw nodes
+            nx.draw_networkx_nodes(self.G, pos=self.pos, node_color=signal, cmap=cmap, ax=axes, **kwds)
+            
         elif nodetype == "size":
-            nx.draw(self.G,arrows=True,
-                    node_size=node_values,
-                    node_color=node_color,
-                    pos=self.pos,
-                    ax=axes,
-                    cmap=cmap, 
-                    **kwds)
+            # Draw nodes
+            nx.draw_networkx_nodes(self.G, pos=self.pos, node_size=node_values, 
+                                   node_color=node_color, cmap=cmap, ax=axes, **kwds)
+
         else:
             print("Unsupported input ... plotting nodes with default size and color")
 
+        # Draw symmetric edges (bidirectional) in one color/style
+        nx.draw_networkx_edges(self.G, pos=self.pos, edgelist=list(symmetric_edges), ax=axes, 
+                    edge_color=symmetric_color, arrows=False, width=un_arrow_width)
+        # Draw asymmetric edges (unidirectional) in another color/style
+        nx.draw_networkx_edges(self.G, pos=self.pos, edgelist=list(asymmetric_edges), ax=axes, 
+                    edge_color=asymmetric_color, arrows=True, connectionstyle='arc3,rad=0.0', 
+                    arrowsize=arrow_size, width=arrow_width)
+        
         if colorbar:
             sm = plt.cm.ScalarMappable(cmap=cmap, norm=plt.Normalize(vmin=0, vmax=1))
             plt.colorbar(sm)
 
-    def set_operator(self, name='adjacency', **kwargs):
+    # Graph Theoric Properties
+    def is_directed(self):
         """
-        Returns the operator associated with the graph.
+        Check if the graph is directed.
         """
-        if self.G is None:
-            raise ValueError("Graph is not initialized. Please provide a valid graph.")
-        if self.adj_matrix is None:
-            raise ValueError("Adjacency matrix is not initialized. Please provide a valid adjacency matrix or a Graph.")
+        return isinstance(self.G, nx.DiGraph)
+    
+    def assymetry_level(self, return_number=False, verbose=False):
+        """
+        Calculate the assymetry of a graph represented by its adjacency matrix A.
+        Assymetry is defined as the ratio of the number of asymmetric edges to the total number of edges.
+        An edge (i, j) is asymmetric if A[i, j] != A[j, i].
+        """
+        nb_symmetric = np.sum((self.adj_matrix + self.adj_matrix.T) == 2) // 2 # divide by 2 because we consider 1 edge even though its 2 entries 
+        nb_assymetric = np.sum((self.adj_matrix + self.adj_matrix.T) == 1) // 2 # this is re-checked
+        if verbose:
+            print(f"Number of symmetric edges: {nb_symmetric}, Number of asymmetric edges: {nb_assymetric}")
+        if return_number:
+            return nb_assymetric / (nb_symmetric + nb_assymetric) if (nb_symmetric + nb_assymetric) > 0 else 0, (nb_symmetric, nb_assymetric)
+        return nb_assymetric / (nb_symmetric + nb_assymetric) if (nb_symmetric + nb_assymetric) > 0 else 0
+
+    def degree_entropy(self, degree_type='in'):
+        """
+        Calculate the indegree entropy of the in-degree and out-degree distributions of a graph.
+        """
+        if degree_type not in ['in', 'out']:
+            raise ValueError("degree_type must be either 'in' or 'out'")
         
-        self.name = name
-        if name == 'adjacency':
-            self.operator = Adjacency(self, **kwargs)
-        elif name == 'laplacian':
-            self.operator = Laplacian(self, **kwargs)
+        # Calculate the entropy
+        if degree_type == 'in':
+            in_degree = np.sum(self.adj_matrix, axis=1)
+            p = in_degree / np.sum(in_degree) if np.sum(in_degree) > 0 else np.zeros_like(in_degree)
         else:
-            raise ValueError(f"Unknown operator name: {name} \
-                             (must be one of ['adjacency', 'laplacian'])")
+            out_degree = np.sum(self.adj_matrix, axis=0)
+            p = out_degree / np.sum(out_degree) if np.sum(out_degree) > 0 else np.zeros_like(out_degree)
+
+        return -np.sum(p * np.log2(p + 1e-10))  # Adding a small constant to avoid log(0)
+        
+    def ratio_entropy(self):
+        """ 
+        Calculate the ratio entropy of the graph.
+        The ratio entropy is defined as the entropy of the in-degree divided by the out-degree.
+        It is a measure of the balance between incoming and outgoing connections in the graph.
+        """
+        in_degree = np.sum(self.adj_matrix, axis=1)
+        out_degree = np.sum(self.adj_matrix, axis=0)
+
+        out_degree[out_degree == 0] = -1  # Avoid division by zero
+        ratio = in_degree / out_degree  # Avoid division by zero
+        ratio[ratio < 0] = 1
+        ratio = ratio / np.sum(ratio) if np.sum(ratio) > 0 else np.zeros_like(ratio)
+
+        entropy = -np.sum(ratio * np.log2(ratio + 1e-10))
+        return entropy
 
     def __repr__(self):
         return f"<Current Operator(name={self.name}, num_nodes={self.G.number_of_nodes()}, num_edges={self.G.number_of_edges()})>"

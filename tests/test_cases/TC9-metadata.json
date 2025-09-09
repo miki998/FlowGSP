@@ -1,0 +1,16 @@
+{
+    "Title": "Test inverse GFT",
+    "Description": "compute inverse graph fourier transform of all ones coefficient (constant)",
+    "Type": "arrays",
+    "Source": "self",
+    "Examples": "adjacency cycle - adjacency usa - laplacian cycle - laplacian usa",
+    "Typeset": {
+        "Type": "array",
+        "Items": {
+            "Type": "array",
+            "Items": {
+                "Type": "sequence"
+            }
+        }
+    }
+}

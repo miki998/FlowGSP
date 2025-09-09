@@ -1,0 +1,16 @@
+{
+    "Title": "Test hilbert filter",
+    "Description": "compute hilbert filter of a given eigenvalue set",
+    "Type": "arrays",
+    "Source": "self",
+    "Examples": "adjacency usa",
+    "Typeset": {
+        "Type": "array",
+        "Items": {
+            "Type": "array",
+            "Items": {
+                "Type": "sequence"
+            }
+        }
+    }
+}

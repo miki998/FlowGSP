@@ -2,7 +2,7 @@
 Copyright © 2025 Chun Hei Michael Chan, MIPLab EPFL
 """
 
-from flowgsp.utils import *
+from flowgsp.utils import np, tqdm
 from .stationarity import Stationary
 
 class Surrogate(Stationary):
@@ -161,10 +161,10 @@ class Surrogate(Stationary):
             randomized = self.graph.operator.inverseGFT(rand)
             ret.append(randomized)
 
-        return ret
+        return np.array(ret)
     
     def directed_random_surrogate(self, signal:np.ndarray, nrands:int, 
-                                  seed:int=99, normalize:bool=False):
+                                  seed:int=99, normalize:bool=True):
         """
         Generate surrogate data by randomizing the given signal using a direct method.
 
@@ -177,7 +177,7 @@ class Surrogate(Stationary):
         seed : int, optional
             The seed for the random number generator (default is 99).
         normalize : bool, optional
-            If True, normalize the surrogates to have the same norm as the input signal (default is False).
+            If True, normalize the surrogates to have the same norm as the input signal (default is True).
 
         Returns
         -------

@@ -2,7 +2,7 @@
 Copyright © 2025 Chun Hei Michael Chan, MIPLab EPFL
 """
 
-from flowgsp.utils import np, hermitian
+from flowgsp.utils import np, hermitian, warnings
 from .base import Operator
 from .jordan_destroy import destroy_jordan_blocks_laplacian
 from typing import Optional
@@ -32,7 +32,7 @@ class Laplacian(Operator):
         self.M = self.compute_directed_laplacian(self.graph.adj_matrix, in_degree=in_degree)
         
         if self.is_symmetric():
-            self.V, self.U = np.linalg.eig(self.M)
+            self.V, self.U = np.linalg.eigh(self.M)
         else:
             try:
                 self.V, self.U = np.linalg.eig(self.M)
@@ -86,7 +86,7 @@ class Laplacian(Operator):
         if np.any(A.imag != 0):
             raise ValueError("Complex values in laplacian matrix")
         elif np.any(np.diag(A) != 0):
-            raise ValueError("Not an Adjacency matrix")
+            warnings.warn("Diagonal entries in adjacency matrix are not zero, this is not a valid adjacency matrix.")
         
         if in_degree:
             deg = A.sum(axis=1).astype(float)

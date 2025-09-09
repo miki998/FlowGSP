@@ -1,0 +1,16 @@
+{
+    "Title": "Test GFT",
+    "Description": "compute graph fourier transform of all ones signal (constant)",
+    "Type": "arrays",
+    "Source": "self",
+    "Examples": "adjacency cycle - adjacency usa - laplacian cycle - laplacian usa",
+    "Typeset": {
+        "Type": "array",
+        "Items": {
+            "Type": "array",
+            "Items": {
+                "Type": "sequence"
+            }
+        }
+    }
+}

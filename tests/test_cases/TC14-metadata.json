@@ -1,0 +1,16 @@
+{
+    "Title": "Test graph instant frequency",
+    "Description": "compute graph instant frequency of a all ones signal (constant)",
+    "Type": "arrays",
+    "Source": "self",
+    "Examples": "adjacency usa",
+    "Typeset": {
+        "Type": "array",
+        "Items": {
+            "Type": "array",
+            "Items": {
+                "Type": "sequence"
+            }
+        }
+    }
+}

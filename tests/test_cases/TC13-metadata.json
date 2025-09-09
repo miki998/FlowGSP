@@ -1,0 +1,16 @@
+{
+    "Title": "Test analytical signal",
+    "Description": "compute the analytical signal of all ones signal (constant)",
+    "Type": "arrays",
+    "Source": "self",
+    "Examples": "adjacency usa",
+    "Typeset": {
+        "Type": "array",
+        "Items": {
+            "Type": "array",
+            "Items": {
+                "Type": "sequence"
+            }
+        }
+    }
+}
