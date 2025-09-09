@@ -1,5 +1,5 @@
 """
-Copyright © 2024 Chun Hei Michael Chan, MIPLab EPFL
+Copyright © 2025 Chun Hei Michael Chan, MIPLab EPFL
 """
 
 import numpy as np
@@ -28,10 +28,10 @@ def p_value(null_distrib: np.ndarray, statistic: float, two_tail: bool = False):
 
     score_r = np.mean(rc)
     score_l = np.mean(lc)
-    score = np.min(score_r, score_l)
+    score = np.min([score_r, score_l])
 
     if two_tail:
         score *= 2
-        score = np.min(score, 1)
+        score = np.min([score, 1])
 
     return score

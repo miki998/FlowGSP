@@ -9,7 +9,7 @@ To publish this package
 ### Installation
 
 Run the command:
-`pip install -i https://test.pypi.org/simple/ flowGSP==0.0.1`
+`pip install -i https://test.pypi.org/simple/ flowGSP==0.2.0`
 
 #### Requirements
 
