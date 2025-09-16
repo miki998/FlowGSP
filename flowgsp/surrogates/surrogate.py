@@ -149,6 +149,9 @@ class Surrogate(Stationary):
         ret : list
             A list containing the randomized surrogate signals
         """
+        if self.graph.is_directed():
+            raise ValueError("The graph is directed. Use directed_random_surrogate instead.")
+        
         np.random.seed(rseed)
         ssignal = self.graph.operator.GFT(signal)
 
@@ -184,6 +187,9 @@ class Surrogate(Stationary):
         surrogates : np.ndarray
             An array of generated surrogate signals.
         """
+        if not self.graph.is_directed():
+            raise ValueError("The graph is undirected. Use undirected_random_surrogate instead.")
+
         np.random.seed(seed)
         seeds = (10000 * np.random.random(nrands)).astype(int)
         surrogates = np.array([self.phase_randomize(signal, seed=seed_idx) for seed_idx in seeds]).real

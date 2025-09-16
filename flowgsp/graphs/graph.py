@@ -226,7 +226,7 @@ class Graph:
         """
         Check if the graph is directed.
         """
-        return isinstance(self.G, nx.DiGraph)
+        return isinstance(self.G, nx.DiGraph) and (self.assymetry_level() > 0)
     
     def assymetry_level(self, return_number=False, verbose=False):
         """
