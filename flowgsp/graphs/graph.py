@@ -76,7 +76,7 @@ class Graph:
 
     # Draw methods
     def draw(self, axes:matplotlib.axes.Axes=None, arrow_size:int=10, arrow_width:int=2, 
-             symmetric_color='tab:gray', asymmetric_color='tab:red',
+             symmetric_color='tab:gray', asymmetric_color='tab:red', edge_alpha=None,
              **kwds):
         """
         Draw the directed graph using NetworkX's draw function.
@@ -100,12 +100,12 @@ class Graph:
 
         # Draw symmetric edges (bidirectional) in one color/style
         nx.draw_networkx_edges(self.G, pos=self.pos, edgelist=list(symmetric_edges), ax=axes, 
-                       edge_color=symmetric_color, arrows=False)
+                       edge_color=symmetric_color, arrows=False, alpha=edge_alpha)
 
         # Draw asymmetric edges (unidirectional) in another color/style
         nx.draw_networkx_edges(self.G, pos=self.pos, edgelist=list(asymmetric_edges), ax=axes, 
                        edge_color=asymmetric_color, arrows=True, connectionstyle='arc3,rad=0.0', 
-                       arrowsize=arrow_size, width=arrow_width)
+                       arrowsize=arrow_size, width=arrow_width, alpha=edge_alpha)
 
         # Draw labels if requested
         if kwds.get("with_labels", False):
