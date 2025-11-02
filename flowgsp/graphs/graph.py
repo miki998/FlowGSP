@@ -12,17 +12,23 @@ class Graph:
     adding nodes and edges, drawing the graph, and setting an operator for spectral analysis.
     It serves as a base class for more specialized graph types.
     """
-    def __init__(self, G=None, adj_matrix=None, pos=None):
+    def __init__(self, G=None, adj_matrix=None, pos=None, is_directed=None):
         if G is not None:
             self.G = G
             self.adj_matrix = nx.to_numpy_array(G)
             self.pos = pos if pos is not None else nx.kamada_kawai_layout(G)
 
         elif adj_matrix is not None:
-            if np.allclose(adj_matrix, hermitian(adj_matrix)):
-                self.G = nx.Graph()
+            if is_directed is not None:
+                if is_directed:
+                    self.G = nx.DiGraph()
+                else:
+                    self.G = nx.Graph()
             else:
-                self.G = nx.DiGraph()
+                if np.allclose(adj_matrix, hermitian(adj_matrix)):
+                    self.G = nx.Graph()
+                else:
+                    self.G = nx.DiGraph()
             self.from_adjacency_matrix(adj_matrix)
             self.adj_matrix = adj_matrix
             self.pos = pos if pos is not None else nx.kamada_kawai_layout(self.G)
