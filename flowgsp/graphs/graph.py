@@ -234,7 +234,14 @@ class Graph:
         """
         return isinstance(self.G, nx.DiGraph) and (self.assymetry_level() > 0)
     
-    def assymetry_level(self, return_number=False, verbose=False):
+    def assymetry_level(self):
+        """
+        Calculate the assymetry level of the graph.
+        """
+        ratio_asymmetric = np.linalg.norm(self.adj_matrix - self.adj_matrix.T) / np.linalg.norm(self.adj_matrix)
+        return ratio_asymmetric
+
+    def assymetry_edge_level(self, return_number=False, verbose=False):
         """
         Calculate the assymetry of a graph represented by its adjacency matrix A.
         Assymetry is defined as the ratio of the number of asymmetric edges to the total number of edges.
