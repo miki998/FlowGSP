@@ -126,7 +126,7 @@ class Graph:
 
         # Draw labels if requested
         if kwds.get("with_labels", False):
-            nx.draw_networkx_labels(self.G, pos=grapgh.pos, ax=axes)
+            nx.draw_networkx_labels(self.G, pos=self.pos, ax=axes)
 
     def draw_signal(self, signal:Optional[np.ndarray]=None, cmap:Optional[colors.Colormap]=None, 
                scale:int=100, axes:matplotlib.axes.Axes=None, scolor:Optional[list]=["red", "blue"], 

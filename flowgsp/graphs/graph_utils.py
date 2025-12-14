@@ -134,7 +134,6 @@ def var_generator(A:np.ndarray, active_nodes:list, amplitude_nodes:list,
     -------
         directed_logs (numpy.ndarray): A 2D array of shape (n_iter, graphdim) containing the sequence of directed graph signals.
     """
-    np.random.seed(seed)
 
     graphdim = len(A)
 

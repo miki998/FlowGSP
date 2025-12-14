@@ -250,7 +250,6 @@ class Stationary:
         ret_z: np.ndarray
             The generated white noise samples in the directed graph domain.
         """
-        np.random.seed(seed)
         N = self.graph.operator.U.shape[0]
         if psd.ndim == 1:
             spectral_covariance = np.diag(psd)
@@ -287,7 +286,6 @@ class Stationary:
         ret_z: np.ndarray
             The generated white noise samples in the directed graph domain.
         """
-        np.random.seed(seed)
         # Generating White Noise equivalent in directed graph
         covariance_dir = (self.graph.operator.U @ hermitian(self.graph.operator.U)).real
 
@@ -316,7 +314,6 @@ class Stationary:
         -------
             directed_logs (numpy.ndarray): A 2D array of shape (n_iter, graphdim) containing the sequence of directed graph signals.
         """
-        np.random.seed(seed)
 
         if add_noise not in ['gaussian', 'graph', None]:
             raise ValueError("add_noise must be either 'gaussian' or 'graph' or None")
