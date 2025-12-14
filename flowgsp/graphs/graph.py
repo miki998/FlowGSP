@@ -111,6 +111,9 @@ class Graph:
                 symmetric_alphas.append((self.G[u][v]['weight'] - absmin) / (absmax - absmin) * (1 - min_edge_alpha) + min_edge_alpha)
             for (u, v) in asymmetric_edges:
                 assymetric_alphas.append((self.G[u][v]['weight'] - absmin) / (absmax - absmin) * (1 - min_edge_alpha) + min_edge_alpha)
+        else:
+            symmetric_alphas = 0.1
+            assymetric_alphas = 0.1
         
         # Draw nodes
         nx.draw_networkx_nodes(self.G, pos=self.pos, ax=axes, **kwds)
