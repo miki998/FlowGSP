@@ -77,7 +77,7 @@ def create_cycle_graph(N:Union[int, tuple], graph_type:Union[str, int]):
 
 def assymetric_erdos_renyi_graph(N:int, density:float = 0.05, ratio_directed:float = 0.1,
                                  degree_bias:float=0.0, ratio_bias:float=0.0, 
-                                 base:str='undirected', seed:int=99):
+                                 base:str='undirected'):
     """
     Generate an variant of asymmetric Erdos-Renyi graph - with chain graph initial backbone.
 
@@ -93,8 +93,6 @@ def assymetric_erdos_renyi_graph(N:int, density:float = 0.05, ratio_directed:flo
         Degree bias for selected nodes, by default 0.0.
     ratio_bias : float, optional
         Ratio of nodes to apply degree bias, by default 0.0.
-    seed : int, optional
-        Random seed for reproducibility, by default 99.
 
     Returns
     -------
@@ -117,7 +115,6 @@ def assymetric_erdos_renyi_graph(N:int, density:float = 0.05, ratio_directed:flo
     count_directed = 0
     edge_count = 0
     
-    np.random.seed(seed)  # for reproducibility
     # Selecting nodes to bias the degree distribution
     if degree_bias != 0:
         nodes_to_bias = np.random.randint(0, N, size=int(N * ratio_bias))  # nodes to bias
