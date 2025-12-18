@@ -82,8 +82,8 @@ class Graph:
 
     # Draw methods
     def draw(self, axes:matplotlib.axes.Axes=None, arrow_size:int=10, arrow_width:int=2, 
-             symmetric_color='tab:gray', asymmetric_color='tab:red', edge_alpha=None,
-             **kwds):
+            symmetric_color='tab:gray', asymmetric_color='tab:red', min_edge_alpha=None,
+            **kwds):
         """
         Draw the directed graph using NetworkX's draw function.
         If no axes are provided, a new figure and axes are created.
@@ -93,25 +93,36 @@ class Graph:
         
         # Separate symmetric (bidirectional) and asymmetric (unidirectional) edges
         edges = list(self.G.edges())
-        symmetric_edges = set()
-        asymmetric_edges = set()
+        symmetric_edges = []
+        asymmetric_edges = []
         for u, v in edges:
             if (v, u) in edges and (v, u) not in symmetric_edges:
-                symmetric_edges.add((u, v))
+                symmetric_edges.append((u, v))
             elif (v, u) not in edges:
-                asymmetric_edges.add((u, v))
+                asymmetric_edges.append((u, v))
 
+        # Assign different alpha values according to the edge strength for non-binary graphs
+        if not np.all((self.adj_matrix == 0) | (self.adj_matrix == 1)):
+            absmax = np.max(np.abs(self.adj_matrix))
+            absmin = np.min(np.abs(self.adj_matrix))
+            symmetric_alphas = []
+            assymetric_alphas = []
+            for (u, v) in symmetric_edges:
+                symmetric_alphas.append((self.G[u][v]['weight'] - absmin) / (absmax - absmin) * (1 - min_edge_alpha) + min_edge_alpha)
+            for (u, v) in asymmetric_edges:
+                assymetric_alphas.append((self.G[u][v]['weight'] - absmin) / (absmax - absmin) * (1 - min_edge_alpha) + min_edge_alpha)
+        
         # Draw nodes
         nx.draw_networkx_nodes(self.G, pos=self.pos, ax=axes, **kwds)
 
         # Draw symmetric edges (bidirectional) in one color/style
         nx.draw_networkx_edges(self.G, pos=self.pos, edgelist=list(symmetric_edges), ax=axes, 
-                       edge_color=symmetric_color, arrows=False, alpha=edge_alpha)
+                    edge_color=symmetric_color, width=arrow_width, arrows=False, alpha=symmetric_alphas)
 
         # Draw asymmetric edges (unidirectional) in another color/style
         nx.draw_networkx_edges(self.G, pos=self.pos, edgelist=list(asymmetric_edges), ax=axes, 
-                       edge_color=asymmetric_color, arrows=True, connectionstyle='arc3,rad=0.0', 
-                       arrowsize=arrow_size, width=arrow_width, alpha=edge_alpha)
+                    edge_color=asymmetric_color, arrows=True, connectionstyle='arc3,rad=0.0', 
+                    arrowsize=arrow_size, width=arrow_width, alpha=assymetric_alphas)
 
         # Draw labels if requested
         if kwds.get("with_labels", False):

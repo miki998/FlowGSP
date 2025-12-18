@@ -117,7 +117,6 @@ def assymetric_erdos_renyi_graph(N:int, density:float = 0.05, ratio_directed:flo
     count_directed = 0
     edge_count = 0
     
-    np.random.seed(seed)  # for reproducibility
     # Selecting nodes to bias the degree distribution
     if degree_bias != 0:
         nodes_to_bias = np.random.randint(0, N, size=int(N * ratio_bias))  # nodes to bias

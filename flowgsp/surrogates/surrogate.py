@@ -43,7 +43,6 @@ class Surrogate(Stationary):
             The computed randomizing vector.
         """
         tasks = self.graph.operator.eigvalues_pairs()
-        np.random.seed(seed)
         randomizer_vector = np.zeros((N), dtype=complex)
         for t in tasks:
             if len(t) == 1:
@@ -119,7 +118,6 @@ class Surrogate(Stationary):
         ret : np.ndarray
             Array of shape (nrands, len(arr)) containing the random surrogates.
         """
-        np.random.seed(seed)
 
         ret = np.zeros((nrands, len(signal)))
         for i in range(nrands):
@@ -149,10 +147,7 @@ class Surrogate(Stationary):
         ret : list
             A list containing the randomized surrogate signals
         """
-        if self.graph.is_directed():
-            raise ValueError("The graph is directed. Use directed_random_surrogate instead.")
         
-        np.random.seed(rseed)
         ssignal = self.graph.operator.GFT(signal)
 
         ret = []
@@ -187,10 +182,7 @@ class Surrogate(Stationary):
         surrogates : np.ndarray
             An array of generated surrogate signals.
         """
-        if not self.graph.is_directed():
-            raise ValueError("The graph is undirected. Use undirected_random_surrogate instead.")
 
-        np.random.seed(seed)
         seeds = (10000 * np.random.random(nrands)).astype(int)
         surrogates = np.array([self.phase_randomize(signal, seed=seed_idx) for seed_idx in seeds]).real
         if normalize:

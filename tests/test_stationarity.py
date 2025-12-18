@@ -14,7 +14,6 @@ class TestStationarity(unittest.TestCase):
         self.graph.set_operator('adjacency')
         self.stationarity = flowgsp.surrogates.Stationary(graph=self.graph)
 
-        np.random.seed(99)
         self.graph_samples = np.random.random((self.graph.N))
         self.kernel = np.array([1.0, 0.5])
         self.eps_diag = 0.5
