@@ -21,7 +21,7 @@ class Surrogate(Stationary):
             print("Defaulting to adjacency operator.")
             self.graph.set_operator(name='adjacency')
 
-    def randomizer_phase(self, N:int, seed:int, 
+    def randomizer_phase(self, N:int, 
                         conj:bool=True, onlysign:bool=False):
         """
         Compute randomizing vector
@@ -30,8 +30,6 @@ class Surrogate(Stationary):
         -----------
         N : int
             The size of the randomizing vector.
-        seed : int
-            The seed to use for the random number generator.
         conj : bool, optional
             Whether to use the conjugate of the random shift, by default False.
         onlysign : bool, optional
@@ -79,26 +77,25 @@ class Surrogate(Stationary):
         randomizer_vector = np.diag(randomizer_vector)
         return randomizer_vector
 
-    def phase_randomize(self, signal:np.ndarray, seed:int=99):
+    def phase_randomize(self, signal:np.ndarray):
         """
-        Randomizes the given signal using the provided transformation matrices and a random seed.
+        Randomizes the given signal using the provided transformation matrices.
 
         Parameters:
         ----------
         signal (numpy.ndarray): The input signal to be randomized.
-        seed (int, optional): The seed for the random number generator. Default is 99.
 
         Returns:
         --------
         numpy.ndarray: The randomized signal.
         """
         N = signal.shape[0]
-        complex_randomizer = self.randomizer_phase(N, seed=seed, conj=True)
+        complex_randomizer = self.randomizer_phase(N, conj=True)
         gf_coef = self.graph.operator.GFT(signal)
         randomized = self.graph.operator.inverseGFT(complex_randomizer @ gf_coef)
         return randomized
 
-    def naive_random_surrogate(self, signal:np.ndarray, nrands:int=99, seed:int=99):
+    def naive_random_surrogate(self, signal:np.ndarray, nrands:int=99):
         """
         Generate nrands number of naive random surrogates for the input array arr.
 
@@ -110,8 +107,6 @@ class Surrogate(Stationary):
             Input signal to generate surrogates for
         nrands : int, optional
             Number of random surrogates to generate. Default is 99. 
-        seed : int, optional 
-            Random seed for reproducibility. Default is 99.
 
         Returns
         -------
@@ -125,7 +120,7 @@ class Surrogate(Stationary):
         return ret
 
     def undirected_random_surrogate(self, signal: np.ndarray, 
-                                    nrands:int=99, rseed:int=99):
+                                    nrands:int=99):
         """
         Undirected informed generation of surrogate signals
         #TODO use phase randomizer instead of randomizing the sign here
@@ -139,8 +134,6 @@ class Surrogate(Stationary):
             The inverse graph Fourier basis  
         nrands : int, optional
             The number of random surrogates to generate (default 99)
-        rseed : int, optional 
-            The random seed (default 99)
 
         Returns
         -------
@@ -162,7 +155,7 @@ class Surrogate(Stationary):
         return np.array(ret)
     
     def directed_random_surrogate(self, signal:np.ndarray, nrands:int, 
-                                  seed:int=99, normalize:bool=True):
+                                  normalize:bool=True):
         """
         Generate surrogate data by randomizing the given signal using a direct method.
 
@@ -172,8 +165,6 @@ class Surrogate(Stationary):
             The input signal to be randomized.
         nrands : int
             The number of random surrogates to generate.
-        seed : int, optional
-            The seed for the random number generator (default is 99).
         normalize : bool, optional
             If True, normalize the surrogates to have the same norm as the input signal (default is True).
 
@@ -183,8 +174,12 @@ class Surrogate(Stationary):
             An array of generated surrogate signals.
         """
 
+<<<<<<< HEAD
         seeds = (10000 * np.random.random(nrands)).astype(int)
         surrogates = np.array([self.phase_randomize(signal, seed=seed_idx) for seed_idx in seeds]).real
+=======
+        surrogates = np.array([self.phase_randomize(signal) for ses_idx in range(nrands)]).real
+>>>>>>> 9f37bd608edf99319a4299e42d3370c07869436e
         if normalize:
             surrogates = np.linalg.norm(signal) * surrogates / np.linalg.norm(surrogates, axis=1)[:, None]
         return surrogates

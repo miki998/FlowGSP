@@ -227,7 +227,7 @@ class Stationary:
         gL = (self.graph.operator.U @ kernel @ hermitian(self.graph.operator.U))[i]
         return gL
 
-    def psd_realization_generator(self, psd:np.ndarray, nb_repeat:int, seed:int=99):
+    def psd_realization_generator(self, psd:np.ndarray, nb_repeat:int):
         """
         Generate samples following a given PSD in graph domain.
         Sampled from a multivariate normal distribution with covariance matrix
@@ -240,8 +240,6 @@ class Stationary:
             The psd (vector) precising the behaviour of stationary process
         nb_repeat: int
             The number of samples to generate.
-        seed: int
-            The seed for the random number generator. 
         controlled_covariance: bool
             Whether to use controlled covariance for the white noise generation.
 
@@ -265,7 +263,7 @@ class Stationary:
         ret_z = np.random.multivariate_normal(np.zeros(N), covariance_dir, size=nb_repeat)
         return ret_z
 
-    def white_noise_generator(self, nb_repeat:int, seed:int=99, controlled_covariance:bool=False):
+    def white_noise_generator(self, nb_repeat:int, controlled_covariance:bool=False):
         """
         Generate white noise in graph domain.
         Sampled from a multivariate normal distribution with covariance matrix
@@ -276,8 +274,6 @@ class Stationary:
         -----------
         nb_repeat: int
             The number of samples to generate.
-        seed: int
-            The seed for the random number generator. 
         controlled_covariance: bool
             Whether to use controlled covariance for the white noise generation.
 
@@ -294,7 +290,7 @@ class Stationary:
 
     def var_generator(self, A:np.ndarray, active_nodes:list, amplitude_nodes:list, 
                       time_nodes:list, n_iter:int, time_noise:list, 
-                      add_noise:str='gaussian', gamma:float=1, seed:int=99):
+                      add_noise:str='gaussian', gamma:float=1):
         """
         Generates a sequence of directed graph signals over time using a graph spreading process.
 
@@ -308,7 +304,6 @@ class Stationary:
             add_noise (str): Specifies the type of noise to add.
             time_noise (list): A list of time steps at which Gaussian noise should be added.
             gamma (float, optional): A scaling factor for the adjacency matrix. Defaults to 1.
-            seed (int, optional): A seed for the random number generator. Defaults to 99.
 
         Returns
         -------
@@ -319,7 +314,7 @@ class Stationary:
             raise ValueError("add_noise must be either 'gaussian' or 'graph' or None")
         
         if add_noise == 'graph':
-            random_generators = self.white_noise_generator(n_iter, seed=seed)
+            random_generators = self.white_noise_generator(n_iter)
         elif add_noise == 'gaussian':
             random_generators = [np.random.normal(0, 1, self.graph.N) for _ in range(n_iter)]
         elif add_noise is None:
