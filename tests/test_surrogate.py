@@ -1,5 +1,6 @@
 import unittest
 
+import numpy as np
 import flowgsp
 from flowgsp.utils import load, op, p_value, np
 
@@ -18,6 +19,7 @@ class TestSurrogate(unittest.TestCase):
         self.seed = 42
         self.signal = np.arange(self.graph.N)
         self.nrands = 5
+        np.random.seed(self.seed)
 
     def test_p_value(self):
         null_distrib = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
@@ -28,42 +30,42 @@ class TestSurrogate(unittest.TestCase):
         self.assertLessEqual(result, 1)
 
     def test_randomizer_phase(self):
-        result = self.surrogates.randomizer_phase(self.N, self.seed)
+        result = self.surrogates.randomizer_phase(self.N)
         self.assertIsInstance(result, np.ndarray)
         self.assertEqual(result.shape, (self.N, self.N))
 
     def test_randomizer_phase_onlysign(self):
-        result = self.surrogates.randomizer_phase(self.N, self.seed, onlysign=True)
+        result = self.surrogates.randomizer_phase(self.N, onlysign=True)
         self.assertIsInstance(result, np.ndarray)
         self.assertEqual(result.shape, (self.N, self.N))
 
     def test_randomizer_phase_conj(self):
-        result = self.surrogates.randomizer_phase(self.N, self.seed, conj=True)
+        result = self.surrogates.randomizer_phase(self.N, conj=True)
         self.assertIsInstance(result, np.ndarray)
         self.assertEqual(result.shape, (self.N, self.N))
 
     def test_randomize_direct(self):
-        result = self.surrogates.phase_randomize(self.signal, seed=self.seed)
+        result = self.surrogates.phase_randomize(self.signal)
         self.assertIsInstance(result, np.ndarray)
         self.assertEqual(result.shape, self.signal.shape)
 
     def test_dir_random_surrogate(self):
-        result = self.surrogates.directed_random_surrogate(self.signal, self.nrands, seed=self.seed)
+        result = self.surrogates.directed_random_surrogate(self.signal, self.nrands)
         self.assertIsInstance(result, np.ndarray)
         self.assertEqual(result.shape, (self.nrands, len(self.signal)))
 
     def test_dir_random_surrogate_normalize(self):
-        result = self.surrogates.directed_random_surrogate(self.signal, self.nrands, seed=self.seed, normalize=True)
+        result = self.surrogates.directed_random_surrogate(self.signal, self.nrands, normalize=True)
         self.assertIsInstance(result, np.ndarray)
         self.assertEqual(result.shape, (self.nrands, len(self.signal)))
 
     def test_naive_random_surrogate(self):
-        result = self.surrogates.naive_random_surrogate(self.signal, self.nrands, seed=self.seed)
+        result = self.surrogates.naive_random_surrogate(self.signal, self.nrands)
         self.assertIsInstance(result, np.ndarray)
         self.assertEqual(result.shape, (self.nrands, len(self.signal)))
 
     def test_undir_random_surrogate(self):
-        result = self.surrogates.undirected_random_surrogate(self.signal, self.nrands, rseed=self.seed)
+        result = self.surrogates.undirected_random_surrogate(self.signal, self.nrands)
         self.assertIsInstance(result, np.ndarray)
         self.assertEqual(len(result), self.nrands)
         for surrogate in result:

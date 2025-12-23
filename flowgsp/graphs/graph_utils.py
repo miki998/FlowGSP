@@ -114,7 +114,7 @@ def get_cycles(G: nx.Graph, start_idx: int, max_depth: int, verbose:bool=True):
 def var_generator(A:np.ndarray, active_nodes:list, amplitude_nodes:list, 
                   time_nodes:list, n_iter:int,
                   add_noise:bool, time_noise:list, 
-                  gamma:float=1, seed:int=99):
+                  gamma:float=1):
     """
     Generates a sequence of directed graph signals over time using a graph spreading process.
 
@@ -128,7 +128,6 @@ def var_generator(A:np.ndarray, active_nodes:list, amplitude_nodes:list,
         add_noise (bool): Whether to add Gaussian noise to the graph signals.
         time_noise (list): A list of time steps at which Gaussian noise should be added.
         gamma (float, optional): A scaling factor for the adjacency matrix. Defaults to 1.
-        seed (int, optional): A seed for the random number generator. Defaults to 99.
 
     Returns
     -------
