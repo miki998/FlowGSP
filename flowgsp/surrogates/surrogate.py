@@ -174,12 +174,8 @@ class Surrogate(Stationary):
             An array of generated surrogate signals.
         """
 
-<<<<<<< HEAD
         seeds = (10000 * np.random.random(nrands)).astype(int)
         surrogates = np.array([self.phase_randomize(signal, seed=seed_idx) for seed_idx in seeds]).real
-=======
-        surrogates = np.array([self.phase_randomize(signal) for ses_idx in range(nrands)]).real
->>>>>>> 9f37bd608edf99319a4299e42d3370c07869436e
         if normalize:
             surrogates = np.linalg.norm(signal) * surrogates / np.linalg.norm(surrogates, axis=1)[:, None]
         return surrogates

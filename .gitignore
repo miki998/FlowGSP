@@ -162,7 +162,7 @@ cython_debug/
 #.idea/
 
 # Surrogates folder ignoring
-resources/surrogates_data/
+data/surrogates_data/
 
 # Media for images and videos demo
 media/
