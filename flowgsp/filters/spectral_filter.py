@@ -96,6 +96,8 @@ class SpectralFilter(Filter):
             if len(pair) == 1:
                 kernel[pair[0]] = np.sign(kernel[pair[0]]) * np.abs(kernel[pair[0]])
             elif len(pair) == 2:
+                if kernel.dtype != np.complex128:
+                    kernel = kernel.astype(np.complex128)
                 amplitude = (np.abs(kernel[pair[0]]) + np.abs(kernel[pair[1]])) / 2
                 angle = (np.angle(kernel[pair[0]]) - np.angle(kernel[pair[1]])) / 2
                 kernel[pair[0]] = amplitude * np.exp(1j * angle)
