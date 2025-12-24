@@ -95,21 +95,6 @@ def demonstrate_operators():
     print("\nAvailable operators:")
     print("- 'adjacency': Uses adjacency matrix directly")
     print("- 'laplacian': Graph Laplacian (L = D - A)")
-    print("- 'advection_diffusion': Combines flow and diffusion")
-    print("- 'time_vertex_laplacian': Joint time-vertex operator")
-    
-    # Uncomment when package is installed:
-    # import flowgsp
-    # graph = flowgsp.graphs.Graph(adj_matrix=A)
-    # 
-    # # Set operator type
-    # graph.set_operator('advection_diffusion')
-    # print(f"\nOperator set to: {graph.operator_type}")
-    # 
-    # # Access operator matrix
-    # L = graph.L
-    # print(f"Operator matrix shape: {L.shape}")
-
 
 def visualize_graph():
     """Visualize a directed graph."""

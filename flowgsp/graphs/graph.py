@@ -243,8 +243,17 @@ class Graph:
         """
         Check if the graph is directed.
         """
-        return isinstance(self.G, nx.DiGraph) and (self.assymetry_level() > 0)
-    
+        return isinstance(self.G, nx.DiGraph) and self.is_assymmetric()
+
+    def is_assymmetric(self):
+        """
+        Check if the graph is assymmetric.
+        A graph is considered assymmetric if the assymetry level is 1.
+        """
+
+        nodiff = np.all(np.isclose(self.adj_matrix, self.adj_matrix.T))
+        return not nodiff
+
     def assymetry_level(self):
         """
         Calculate the assymetry level of the graph.

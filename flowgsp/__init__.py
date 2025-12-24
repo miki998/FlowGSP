@@ -10,7 +10,7 @@ from . import operators
 from . constants import *
 
 __version__ = '0.0.1'
-__release_date__ = '2025-06-15'
+__release_date__ = '2025-12-24'
 
 
 # def test():  # pragma: no cover

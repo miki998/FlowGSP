@@ -125,13 +125,6 @@ def assymetric_erdos_renyi_graph(N:int, density:float = 0.05, ratio_directed:flo
         bias = np.ones(N) / N
 
     while edge_count < nb_edges:
-        # UNCOMMENT THIS TO BIAS ONLY DIRECTED EDGES
-        # if count_directed < max_directed_edges: # adding directed edges
-        #     u = np.random.choice(np.arange(0, N), p=bias)
-        #     v = np.random.randint(0, N)
-        # else:  # adding undirected edges
-        #     u = np.random.randint(0, N)
-        #     v = np.random.randint(0, N)
         
         u = np.random.choice(np.arange(0, N), p=bias)
         v = np.random.randint(0, N)

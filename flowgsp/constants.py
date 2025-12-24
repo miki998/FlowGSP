@@ -3,7 +3,7 @@ Copyright © 2025 Chun Hei Michael Chan, MIPLab EPFL
 """
 
 """
-Constants definition for simple accesses - TODO write more details on where these constants are used
+Constants definition for simple accesses
 """
 
 from . utils import plt, matplotlib

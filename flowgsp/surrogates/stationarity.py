@@ -35,17 +35,17 @@ class Stationary:
             psd = deepcopy(kernel)
         else:
             raise ValueError("Input matrix is not a covariance matrix")
-            
+
         exact_cov = self.graph.operator.U @ psd @ hermitian(self.graph.operator.U)
         return exact_cov
-    
-    def estimate_covariance(self, samples:np.ndarray):
+
+    def estimate_covariance(self, samples: np.ndarray):
         """
         Estimate the covariance matrix of the graph samples.
         Parameters:
         -----------
         samples: np.ndarray
-            The graph samples to be checked for stationarity. 
+            The graph samples to be checked for stationarity.
         Returns:
         --------
         np.ndarray
@@ -59,7 +59,7 @@ class Stationary:
             est_covar = np.cov(samples, rowvar=False, bias=True)
         return est_covar
 
-    def estimate_psd(self, est_covar:np.ndarray):
+    def estimate_psd(self, est_covar: np.ndarray):
         """
         Estimate the psd matrix of the graph samples.
         Parameters:
@@ -76,20 +76,27 @@ class Stationary:
         if est_covar.ndim != 2:
             raise ValueError("Input matrix is not a covariance matrix")
 
-        est_psd = self.graph.operator.Uinv @ est_covar @ hermitian(self.graph.operator.Uinv)
+        est_psd = (
+            self.graph.operator.Uinv @ est_covar @ hermitian(self.graph.operator.Uinv)
+        )
         return est_psd
 
-    def is_stationary(self, graph_samples:np.ndarray,
-                    eps_diag:float=0.5, eps_mean:float=0.5, 
-                    verbose:bool=False, return_auto:bool=False):
+    def is_stationary(
+        self,
+        graph_samples: np.ndarray,
+        eps_diag: float = 0.5,
+        eps_mean: float = 0.5,
+        verbose: bool = False,
+        return_auto: bool = False,
+    ):
         """
-        Check if the graph samples are stationary. 
+        Check if the graph samples are stationary.
         The stationarity is checked by comparing the nodal mean and the off-diagonal auto-correlation of the graph samples.
 
         Parameters:
         -----------
         graph_samples: np.ndarray
-            The graph samples to be checked for stationarity. 
+            The graph samples to be checked for stationarity.
             The graph samples are assumed to be in the spectral domain.
         Uinv: np.ndarray
             The matrix of eigenvectors of the graph Laplacian.
@@ -109,31 +116,50 @@ class Stationary:
         """
         if graph_samples.ndim == 1:
             # Compute nodal mean estimate
-            mean_est = np.abs(graph_samples - np.mean(graph_samples)).max() # considering worst case scenario
+            mean_est = np.abs(
+                graph_samples - np.mean(graph_samples)
+            ).max()  # considering worst case scenario
 
             # Compute off-diagonal auto-correlation estimate
             covar_est = np.outer(graph_samples, graph_samples)
-            auto_corr_est = self.graph.operator.Uinv @ covar_est @ hermitian(self.graph.operator.Uinv)
+            auto_corr_est = (
+                self.graph.operator.Uinv
+                @ covar_est
+                @ hermitian(self.graph.operator.Uinv)
+            )
             auto_corr_diag = np.diag(auto_corr_est)
-            off_diag_est = np.abs(auto_corr_est - np.diag(auto_corr_diag)).max() / auto_corr_diag.max()
-            
+            off_diag_est = (
+                np.abs(auto_corr_est - np.diag(auto_corr_diag)).max()
+                / auto_corr_diag.max()
+            )
+
             first_order = mean_est < eps_mean
             second_order = off_diag_est < eps_diag
+            if return_auto:
+                return first_order and second_order, auto_corr_est
             return first_order and second_order
 
         # Compute nodal mean estimate
         mean_vector = np.mean(graph_samples, axis=0)
-        mean_est = np.abs(mean_vector - mean_vector.mean()).max() # considering worst case scenario
+        mean_est = np.abs(
+            mean_vector - mean_vector.mean()
+        ).max()  # considering worst case scenario
 
         # Compute off-diagonal auto-correlation estimate
-        covar_est = np.mean([np.outer(sample, sample) for sample in graph_samples], axis=0)
-        auto_corr_est = self.graph.operator.Uinv @ covar_est @ hermitian(self.graph.operator.Uinv)
+        covar_est = np.mean(
+            [np.outer(sample, sample) for sample in graph_samples], axis=0
+        )
+        auto_corr_est = (
+            self.graph.operator.Uinv @ covar_est @ hermitian(self.graph.operator.Uinv)
+        )
         auto_corr_diag = np.abs(np.diag(auto_corr_est))
-        off_diag_est = np.abs(auto_corr_est - np.diag(auto_corr_diag)).max() / auto_corr_diag.max() # as a percentage of the diagonal entries
-        
+        off_diag_est = (
+            np.abs(auto_corr_est - np.diag(auto_corr_diag)).max() / auto_corr_diag.max()
+        )  # as a percentage of the diagonal entries
+
         if verbose:
-            print(f"1st order cond = {np.round(mean_est,5)}")
-            print(f"2nd order cond = {np.round(off_diag_est,5)}")
+            print(f"1st order cond = {np.round(mean_est, 5)}")
+            print(f"2nd order cond = {np.round(off_diag_est, 5)}")
 
         first_order = mean_est < eps_mean
         second_order = off_diag_est < eps_diag
@@ -141,9 +167,12 @@ class Stationary:
             return first_order and second_order, auto_corr_est
         return first_order and second_order
 
-    def stationary_level(self, graph_samples:np.ndarray, 
-                         covar_est:Optional[np.ndarray]=None, 
-                         return_auto:bool=False):
+    def stationary_level(
+        self,
+        graph_samples: np.ndarray,
+        covar_est: Optional[np.ndarray] = None,
+        return_auto: bool = False,
+    ):
         """
         Compute the ratio of the nodal mean to the off-diagonal auto-correlation of the graph samples.
         This ratio is used to quantify the stationarity of the graph samples.
@@ -151,7 +180,7 @@ class Stationary:
         Parameters:
         -----------
         graph_samples: np.ndarray
-            The graph samples to be checked for stationarity. 
+            The graph samples to be checked for stationarity.
             The graph samples are assumed to be in the spectral domain.
         Uinv: np.ndarray
             The matrix of eigenvectors of the graph Laplacian.
@@ -169,9 +198,13 @@ class Stationary:
                 covar_est = np.outer(graph_samples, graph_samples)
         else:
             if covar_est is None:
-                covar_est = np.mean([np.outer(sample, sample) for sample in graph_samples], axis=0)
+                covar_est = np.mean(
+                    [np.outer(sample, sample) for sample in graph_samples], axis=0
+                )
 
-        auto_corr_est = self.graph.operator.Uinv @ covar_est @ hermitian(self.graph.operator.Uinv)
+        auto_corr_est = (
+            self.graph.operator.Uinv @ covar_est @ hermitian(self.graph.operator.Uinv)
+        )
         auto_corr_diag = np.abs(np.diag(auto_corr_est))
         diag_power = np.linalg.norm(auto_corr_diag)
         off_diag_power = np.linalg.norm(auto_corr_est)
@@ -180,7 +213,7 @@ class Stationary:
             return diag_power / off_diag_power, auto_corr_est
         return diag_power / off_diag_power
 
-    def translation_operator(self, kernel:np.ndarray, i:int):
+    def translation_operator(self, kernel: np.ndarray, i: int):
         """
         Compute translation operator
         The translation operator is defined as the product of the kernel and the inverse of the eigenvector matrix.
@@ -198,15 +231,16 @@ class Stationary:
         gL: np.ndarray
             The translation operator for the graph Laplacian.
         """
-
+        if kernel.ndim == 1:
+            kernel = np.diag(kernel)
         delta = np.zeros(self.graph.operator.U.shape[0]).astype(complex)
         delta[i] = 1.0 + 0j
         spectral_local = self.graph.operator.Uinv @ delta
-        
+
         gL = self.graph.operator.U @ (kernel * spectral_local)
         return gL
 
-    def localization_operator(self, kernel:np.ndarray, i:int):
+    def localization_operator(self, kernel: np.ndarray, i: int):
         """
         Compute Localization operator
 
@@ -227,7 +261,9 @@ class Stationary:
         gL = (self.graph.operator.U @ kernel @ hermitian(self.graph.operator.U))[i]
         return gL
 
-    def psd_realization_generator(self, psd:np.ndarray, nb_repeat:int):
+    def psd_realization_generator(
+        self, psd: np.ndarray, nb_repeat: int, seed: int = 99
+    ):
         """
         Generate samples following a given PSD in graph domain.
         Sampled from a multivariate normal distribution with covariance matrix
@@ -240,14 +276,15 @@ class Stationary:
             The psd (vector) precising the behaviour of stationary process
         nb_repeat: int
             The number of samples to generate.
-        controlled_covariance: bool
-            Whether to use controlled covariance for the white noise generation.
+        seed: int
+            The seed for the random number generator.
 
         Returns:
         --------
         ret_z: np.ndarray
             The generated white noise samples in the directed graph domain.
         """
+        np.random.seed(seed)
         N = self.graph.operator.U.shape[0]
         if psd.ndim == 1:
             spectral_covariance = np.diag(psd)
@@ -257,13 +294,19 @@ class Stationary:
             raise ValueError("PSD is neither a matrix nor a vector")
 
         # Generating White Noise equivalent in directed graph
-        covariance_dir = (self.graph.operator.U @ spectral_covariance @ hermitian(self.graph.operator.U)).real
+        covariance_dir = (
+            self.graph.operator.U
+            @ spectral_covariance
+            @ hermitian(self.graph.operator.U)
+        ).real
         # TODO: Catch special case of weird spectral covariance inputs
-        
-        ret_z = np.random.multivariate_normal(np.zeros(N), covariance_dir, size=nb_repeat)
+
+        ret_z = np.random.multivariate_normal(
+            np.zeros(N), covariance_dir, size=nb_repeat
+        )
         return ret_z
 
-    def white_noise_generator(self, nb_repeat:int, controlled_covariance:bool=False):
+    def white_noise_generator(self, nb_repeat: int, seed: int = 99):
         """
         Generate white noise in graph domain.
         Sampled from a multivariate normal distribution with covariance matrix
@@ -274,23 +317,35 @@ class Stationary:
         -----------
         nb_repeat: int
             The number of samples to generate.
-        controlled_covariance: bool
-            Whether to use controlled covariance for the white noise generation.
+        seed: int
+            The seed for the random number generator.
 
         Returns:
         --------
         ret_z: np.ndarray
             The generated white noise samples in the directed graph domain.
         """
+        np.random.seed(seed)
         # Generating White Noise equivalent in directed graph
         covariance_dir = (self.graph.operator.U @ hermitian(self.graph.operator.U)).real
 
-        ret_z = np.random.multivariate_normal(np.zeros(self.graph.N), covariance_dir, size=nb_repeat)
+        ret_z = np.random.multivariate_normal(
+            np.zeros(self.graph.N), covariance_dir, size=nb_repeat
+        )
         return ret_z
 
-    def var_generator(self, A:np.ndarray, active_nodes:list, amplitude_nodes:list, 
-                      time_nodes:list, n_iter:int, time_noise:list, 
-                      add_noise:str='gaussian', gamma:float=1):
+    def var_generator(
+        self,
+        A: np.ndarray,
+        active_nodes: list,
+        amplitude_nodes: list,
+        time_nodes: list,
+        n_iter: int,
+        time_noise: list,
+        add_noise: str = "gaussian",
+        gamma: float = 1,
+        seed: int = 99,
+    ):
         """
         Generates a sequence of directed graph signals over time using a graph spreading process.
 
@@ -304,19 +359,23 @@ class Stationary:
             add_noise (str): Specifies the type of noise to add.
             time_noise (list): A list of time steps at which Gaussian noise should be added.
             gamma (float, optional): A scaling factor for the adjacency matrix. Defaults to 1.
+            seed (int, optional): A seed for the random number generator. Defaults to 99.
 
         Returns
         -------
             directed_logs (numpy.ndarray): A 2D array of shape (n_iter, graphdim) containing the sequence of directed graph signals.
         """
+        np.random.seed(seed)
 
-        if add_noise not in ['gaussian', 'graph', None]:
+        if add_noise not in ["gaussian", "graph", None]:
             raise ValueError("add_noise must be either 'gaussian' or 'graph' or None")
-        
-        if add_noise == 'graph':
-            random_generators = self.white_noise_generator(n_iter)
-        elif add_noise == 'gaussian':
-            random_generators = [np.random.normal(0, 1, self.graph.N) for _ in range(n_iter)]
+
+        if add_noise == "graph":
+            random_generators = self.white_noise_generator(n_iter, seed=seed)
+        elif add_noise == "gaussian":
+            random_generators = [
+                np.random.normal(0, 1, self.graph.N) for _ in range(n_iter)
+            ]
         elif add_noise is None:
             random_generators = []
 
@@ -331,9 +390,8 @@ class Stationary:
 
         # Generating the diffusion processes
         for _iter in range(n_iter - 1):
-
-            if (_iter in time_noise) and (not add_noise is None):
-                source_random = random_generators[_iter+1]
+            if (_iter in time_noise) and (add_noise is not None):
+                source_random = random_generators[_iter + 1]
             else:
                 source_random = np.zeros(self.graph.N)
 

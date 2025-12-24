@@ -2,9 +2,10 @@
 Copyright © 2025 Chun Hei Michael Chan, MIPLab EPFL
 """
 
-from flowgsp.utils import *
+from flowgsp.utils import np, deepcopy
 from .spectral_filter import SpectralFilter
-    
+
+
 class HilbertFilter(SpectralFilter):
     """
     A spectral filter that applies a kernel in the spectral domain to a signal.
@@ -12,10 +13,11 @@ class HilbertFilter(SpectralFilter):
     into the spectral domain, applies the kernel, and then transforms it back
     to the spatial domain.
     """
+
     def __init__(self, graph, params=None):
         super().__init__(graph, name=None, params=params)
         self.name = "HilbertFilter"
-    
+
     def __repr__(self):
         return f"<Filter(name={self.name}, params={self.params})>"
 
@@ -28,17 +30,17 @@ class HilbertFilter(SpectralFilter):
         filter_H : numpy.ndarray
             Diagonal filter matrix for Hilbert transform in GFT domain
         """
-        filter_H = self.phase_filter(np.pi/2)
+        filter_H = self.phase_filter(np.pi / 2)
         return filter_H
 
-    def hilbert_transform(self, signal:np.ndarray):
+    def hilbert_transform(self, signal: np.ndarray):
         """
-        Compute the Hilbert transform of the input signal in the graph 
+        Compute the Hilbert transform of the input signal in the graph
         Fourier transform (GFT) domain.
 
-        The signal is first transformed to the GFT domain using the 
-        eigenvector matrices U and V. The Hilbert transform filter is 
-        applied in the GFT domain. The result is then inverse transformed 
+        The signal is first transformed to the GFT domain using the
+        eigenvector matrices U and V. The Hilbert transform filter is
+        applied in the GFT domain. The result is then inverse transformed
         back to the vertex domain.
 
         Parameters
@@ -53,18 +55,18 @@ class HilbertFilter(SpectralFilter):
         """
         return self.apply(signal, self.hilbert_filter())
 
-    def analytical_signal(self, signal:np.ndarray):
+    def analytical_signal(self, signal: np.ndarray):
         """
         Compute the analytical signal.
 
-        The analytical signal is computed by taking the Hilbert transform of the 
-        input signal, and adding it with a 90 degree phase shift to the original 
+        The analytical signal is computed by taking the Hilbert transform of the
+        input signal, and adding it with a 90 degree phase shift to the original
         signal.
 
         Parameters
         ----------
         signal : numpy array
-            Input signal 
+            Input signal
         U : numpy array
             Graph Fourier transform eigenvector matrix
         V : numpy array
@@ -82,22 +84,22 @@ class HilbertFilter(SpectralFilter):
 
         return ret
 
-    def graph_instant_frequency(self, signal:np.ndarray):
+    def graph_instant_frequency(self, signal: np.ndarray):
         """
         Compute generalized instant frequency on graph support.
-        
+
         Parameters:
         ----------
         signal : numpy.ndarray
             Input signal.
-        
+
         Returns:
         -------
         numpy.ndarray
             Generalized instant frequency on the graph.
         """
         angle = np.angle(self.analytical_signal(signal))
-        adj = self.graph.operator.adjacency_matrix
+        adj = self.graph.adj_matrix
 
         ret = np.zeros_like(angle)
         for i in range(len(angle)):
@@ -106,17 +108,17 @@ class HilbertFilter(SpectralFilter):
             neighbours_angle = angle[neighbours]
             acc = 0
             for n in neighbours_angle:
-                if n < angle[i]: 
+                if n < angle[i]:
                     acc += n
                 else:
                     modified_n = np.unwrap([angle[i], n])[-1]
                     acc += modified_n
-            ret[i] = acc/len(neighbours_angle) - angle[i]
+            ret[i] = acc / len(neighbours_angle) - angle[i]
 
         ret = np.abs(ret)
         return ret
 
-    def demodulating_bydivision(self, signal:np.ndarray):
+    def demodulating_by_division(self, signal: np.ndarray):
         """Compute the demodulation by direct division on node domain.
 
         Parameters

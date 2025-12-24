@@ -4,6 +4,9 @@ Copyright © 2025 Chun Hei Michael Chan, MIPLab EPFL
 
 from flowgsp.utils import np, tqdm
 from .stationarity import Stationary
+import warnings
+from typing import Optional
+
 
 class Surrogate(Stationary):
     """
@@ -17,12 +20,11 @@ class Surrogate(Stationary):
     def __init__(self, graph, params=None):
         super().__init__(graph, params=params)
         if self.graph.operator is None:
-            print("Warning: No operator set for the graph. ")
-            print("Defaulting to adjacency operator.")
-            self.graph.set_operator(name='adjacency')
+            raise ValueError("Graph operator is not set.")
 
-    def randomizer_phase(self, N:int, 
-                        conj:bool=True, onlysign:bool=False):
+    def randomizer_phase(
+        self, N: int, seed: int = None, conj: bool = True, onlysign: bool = False
+    ):
         """
         Compute randomizing vector
 
@@ -30,6 +32,8 @@ class Surrogate(Stationary):
         -----------
         N : int
             The size of the randomizing vector.
+        seed : int
+            The seed to use for the random number generator.
         conj : bool, optional
             Whether to use the conjugate of the random shift, by default False.
         onlysign : bool, optional
@@ -41,6 +45,7 @@ class Surrogate(Stationary):
             The computed randomizing vector.
         """
         tasks = self.graph.operator.eigvalues_pairs()
+        np.random.seed(seed)
         randomizer_vector = np.zeros((N), dtype=complex)
         for t in tasks:
             if len(t) == 1:
@@ -73,29 +78,32 @@ class Surrogate(Stationary):
                 for tidx in range(len(t)):
                     random_shift = np.random.random() * 2 * np.pi
                     randomizer_vector[t[tidx]] = np.exp(1j * random_shift)
-                
+
         randomizer_vector = np.diag(randomizer_vector)
         return randomizer_vector
 
-    def phase_randomize(self, signal:np.ndarray):
+    def phase_randomize(self, signal: np.ndarray, seed: Optional[int] = None):
         """
-        Randomizes the given signal using the provided transformation matrices.
+        Randomizes the given signal using the provided transformation matrices and a random seed.
 
         Parameters:
         ----------
         signal (numpy.ndarray): The input signal to be randomized.
+        seed (int, optional): The seed for the random number generator. Default is 99.
 
         Returns:
         --------
         numpy.ndarray: The randomized signal.
         """
         N = signal.shape[0]
-        complex_randomizer = self.randomizer_phase(N, conj=True)
+        complex_randomizer = self.randomizer_phase(N, seed=seed, conj=True)
         gf_coef = self.graph.operator.GFT(signal)
         randomized = self.graph.operator.inverseGFT(complex_randomizer @ gf_coef)
         return randomized
 
-    def naive_random_surrogate(self, signal:np.ndarray, nrands:int=99):
+    def naive_random_surrogate(
+        self, signal: np.ndarray, nrands: int = 99, seed: Optional[int] = None
+    ):
         """
         Generate nrands number of naive random surrogates for the input array arr.
 
@@ -106,56 +114,76 @@ class Surrogate(Stationary):
         signal : np.ndarray
             Input signal to generate surrogates for
         nrands : int, optional
-            Number of random surrogates to generate. Default is 99. 
+            Number of random surrogates to generate. Default is 99.
+        seed : int, optional
+            Random seed for reproducibility. Default is 99.
 
         Returns
         -------
         ret : np.ndarray
             Array of shape (nrands, len(arr)) containing the random surrogates.
         """
+        np.random.seed(seed)
 
         ret = np.zeros((nrands, len(signal)))
         for i in range(nrands):
             ret[i] = signal[np.random.permutation(len(signal))]
         return ret
 
-    def undirected_random_surrogate(self, signal: np.ndarray, 
-                                    nrands:int=99):
+    def undirected_random_surrogate(
+        self,
+        signal: np.ndarray,
+        nrands: int = 99,
+        seed: Optional[int] = None,
+        verbose: bool = False,
+    ):
         """
         Undirected informed generation of surrogate signals
-        #TODO use phase randomizer instead of randomizing the sign here
         Parameters
         ----------
         signal : np.ndarray
             The input signal array
-        U : np.ndarray 
+        U : np.ndarray
             The graph Fourier basis
         Uinv : np.ndarray
-            The inverse graph Fourier basis  
+            The inverse graph Fourier basis
         nrands : int, optional
             The number of random surrogates to generate (default 99)
+        seed : int, optional
+            The random seed (default 99)
 
         Returns
         -------
         ret : list
             A list containing the randomized surrogate signals
         """
-        
+        if self.graph.is_directed():
+            warnings.warn(
+                "The graph is directed. Use directed_random_surrogate instead."
+            )
+
+        np.random.seed(seed)
         ssignal = self.graph.operator.GFT(signal)
 
         ret = []
-        for _ in tqdm(range(nrands), disable=True):
+        for n in tqdm(range(nrands), disable=not verbose):
             # Initialize the randomizer
-            R = np.diag(np.sign(np.random.random(self.graph.N) - 0.5))
+            R = self.randomizer_phase(self.graph.N, seed=n, onlysign=True)
 
             rand = R @ ssignal
             randomized = self.graph.operator.inverseGFT(rand)
             ret.append(randomized)
 
         return np.array(ret)
-    
-    def directed_random_surrogate(self, signal:np.ndarray, nrands:int, 
-                                  normalize:bool=True):
+
+    def directed_random_surrogate(
+        self,
+        signal: np.ndarray,
+        nrands: int,
+        seed: Optional[int] = None,
+        normalize: bool = True,
+        verbose: bool = False,
+    ):
         """
         Generate surrogate data by randomizing the given signal using a direct method.
 
@@ -165,6 +193,8 @@ class Surrogate(Stationary):
             The input signal to be randomized.
         nrands : int
             The number of random surrogates to generate.
+        seed : int, optional
+            The seed for the random number generator (default is 99).
         normalize : bool, optional
             If True, normalize the surrogates to have the same norm as the input signal (default is True).
 
@@ -173,9 +203,23 @@ class Surrogate(Stationary):
         surrogates : np.ndarray
             An array of generated surrogate signals.
         """
+        if not self.graph.is_directed():
+            warnings.warn(
+                "The graph is undirected. Use undirected_random_surrogate instead."
+            )
 
+        np.random.seed(seed)
         seeds = (10000 * np.random.random(nrands)).astype(int)
-        surrogates = np.array([self.phase_randomize(signal, seed=seed_idx) for seed_idx in seeds]).real
+        surrogates = np.array(
+            [
+                self.phase_randomize(signal, seed=seed_idx)
+                for seed_idx in tqdm(seeds, disable=not verbose)
+            ]
+        ).real
         if normalize:
-            surrogates = np.linalg.norm(signal) * surrogates / np.linalg.norm(surrogates, axis=1)[:, None]
+            surrogates = (
+                np.linalg.norm(signal)
+                * surrogates
+                / np.linalg.norm(surrogates, axis=1)[:, None]
+            )
         return surrogates
