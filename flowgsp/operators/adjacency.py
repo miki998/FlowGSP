@@ -74,3 +74,22 @@ class Adjacency(Operator):
         self.params['in_degree'] = in_degree
         self.params['cond_number'] = cond_number
         self.params['decomposition'] = decomposition
+
+    def low_pass_kernel(self, limfreq: int, factor: int = 1):
+        """
+        Compute the low-pass kernel for the Adjacency operator. Rectangular ideal low-pass filter.
+        """
+        kernel = np.zeros(self.graph.N)
+        pad = 1 if limfreq < self.conjugate_frequency(limfreq) else 2
+        kernel[: limfreq + pad] = factor
+
+        return kernel
+
+    def high_pass_kernel(self, limfreq: int, factor: int = 1):
+        """
+        Compute the high-pass kernel for the Adjacency operator. Rectangular ideal high-pass filter.
+        """
+        kernel = 1 - self.low_pass_kernel(limfreq, factor=1)
+        kernel *= factor
+
+        return kernel

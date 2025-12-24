@@ -96,10 +96,30 @@ class Laplacian(Operator):
 
         return ret
 
-    def heat_kernel(self, alpha:float=0.001):
+    def heat_kernel(self, alpha: float = 0.001):
         """
         Compute the heat kernel for the Laplacian operator.
         The heat kernel is defined as K = 1 - alpha * V.real, where V is the eigenvalues of the Laplacian matrix.
         """
         kernel = np.ones(self.graph.N) - alpha * self.V.real
+        return kernel
+
+    def low_pass_kernel(self, limfreq: int, factor: int = 1):
+        """
+        Compute the low-pass kernel for the Laplacian operator. Rectangular ideal low-pass filter.
+        """
+
+        kernel = np.zeros(self.graph.N)
+        pad = 1 if limfreq < self.conjugate_frequency(limfreq) else 2
+        kernel[: limfreq + pad] = factor
+
+        return kernel
+
+    def high_pass_kernel(self, limfreq: int, factor: int = 1):
+        """
+        Compute the high-pass kernel for the Laplacian operator. Rectangular ideal high-pass filter.
+        """
+        kernel = 1 - self.low_pass_kernel(limfreq, factor=1)
+        kernel *= factor
+
         return kernel
