@@ -4,12 +4,12 @@ This is the public version of my GSP framework employed to investigate directed 
 
 ### Purpose
 
-To publish this package
+To publish this package in [FlowGSP](https://test.pypi.org/project/flowGSP) in testpypi.
 
 ### Installation
 
 Run the command:
-`pip install -i https://test.pypi.org/simple/ flowGSP==0.2.0`
+`pip install -i https://test.pypi.org/simple/ flowGSP`
 
 #### Requirements
 
@@ -18,3 +18,4 @@ Run the command:
 - graph hilbert transform
 - phase random surrogate
 - stationarity
+
