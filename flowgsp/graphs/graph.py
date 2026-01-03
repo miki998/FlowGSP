@@ -77,7 +77,7 @@ class Graph:
 
     # Draw methods
     def draw(self, axes:matplotlib.axes.Axes=None, arrow_size:int=10, arrow_width:int=2, 
-            symmetric_color='tab:blue', asymmetric_color='tab:red', min_edge_alpha=0, no_nodes=False,
+            symmetric_color='tab:gray', asymmetric_color='tab:red', min_edge_alpha=0, no_nodes=False,
             **kwds):
         """
         Draw the directed graph using NetworkX's draw function.
