@@ -77,7 +77,7 @@ class Graph:
 
     # Draw methods
     def draw(self, axes:matplotlib.axes.Axes=None, arrow_size:int=10, arrow_width:int=2, 
-            symmetric_color='tab:gray', asymmetric_color='tab:red', min_edge_alpha=None,
+            symmetric_color='tab:blue', asymmetric_color='tab:red', min_edge_alpha=0, no_nodes=False,
             **kwds):
         """
         Draw the directed graph using NetworkX's draw function.
@@ -88,13 +88,21 @@ class Graph:
         
         # Separate symmetric (bidirectional) and asymmetric (unidirectional) edges
         edges = list(self.G.edges())
-        symmetric_edges = []
-        asymmetric_edges = []
-        for u, v in edges:
-            if (v, u) in edges and (v, u) not in symmetric_edges:
-                symmetric_edges.append((u, v))
-            elif (v, u) not in edges:
-                asymmetric_edges.append((u, v))
+
+        # For undirected graphs, NetworkX only stores one copy of each edge (u, v)
+        # and never stores the reverse (v, u). In that case, all edges should be
+        # treated as "symmetric" and drawn with `symmetric_color`.
+        if not isinstance(self.G, nx.DiGraph):
+            symmetric_edges = edges
+            asymmetric_edges = []
+        else:
+            symmetric_edges = []
+            asymmetric_edges = []
+            for u, v in edges:
+                if (v, u) in edges and (v, u) not in symmetric_edges:
+                    symmetric_edges.append((u, v))
+                elif (v, u) not in edges:
+                    asymmetric_edges.append((u, v))
 
         # Assign different alpha values according to the edge strength for non-binary graphs
         if not np.all((self.adj_matrix == 0) | (self.adj_matrix == 1)):
@@ -108,7 +116,8 @@ class Graph:
                 assymetric_alphas.append((self.G[u][v]['weight'] - absmin) / (absmax - absmin) * (1 - min_edge_alpha) + min_edge_alpha)
         
         # Draw nodes
-        nx.draw_networkx_nodes(self.G, pos=self.pos, ax=axes, **kwds)
+        if not no_nodes:
+            nx.draw_networkx_nodes(self.G, pos=self.pos, ax=axes, **kwds)
 
         # Draw symmetric edges (bidirectional) in one color/style
         nx.draw_networkx_edges(self.G, pos=self.pos, edgelist=list(symmetric_edges), ax=axes, 
@@ -217,7 +226,6 @@ class Graph:
             # Draw nodes
             nx.draw_networkx_nodes(self.G, pos=self.pos, node_size=node_values, 
                                    node_color=node_color, cmap=cmap, ax=axes, **kwds)
-
         else:
             print("Unsupported input ... plotting nodes with default size and color")
 
@@ -232,6 +240,97 @@ class Graph:
         if colorbar:
             sm = plt.cm.ScalarMappable(cmap=cmap, norm=plt.Normalize(vmin=0, vmax=1))
             plt.colorbar(sm)
+
+
+    def draw_signal_only(self, signal:Optional[np.ndarray]=None, cmap:Optional[colors.Colormap]=None, 
+               scale:int=100, axes:matplotlib.axes.Axes=None, scolor:Optional[list]=["red", "blue"], 
+               colorbar:bool=False, nodetype:bool="size", **kwds):
+        """
+        Visualize a signal on a directed graph.
+
+        Plots a directed graph with node size and/or color determined by node values.
+        Node size is scaled by the 'scale' parameter to be visible.
+        Node color is determined by the sign of the node value (positive or negative)
+        if a color map is not provided. If a color map is provided, node color 
+        is mapped to the normalized node value.
+
+        Parameters
+        ----------
+        G : networkx.Graph
+            Directed graph to plot
+
+        signal : numpy.ndarray
+            graph signal, used for size and/or color
+
+        pos : dict, optional
+            Node positions for graph layout
+
+        cmap : matplotlib.colors.Colormap, optional
+            Color map to use for node colors
+        
+        scale : float, optional
+            Scaling factor for node sizes
+
+        ax : matplotlib.axes.Axes, optional
+            Axes to plot on
+        
+        scolor : list, optional
+            Default node colors if cmap not provided
+
+        colorbar : bool, optional
+            Whether to draw a colorbar (requires cmap)
+
+        nodetype : str
+            - "color" colors is showing the difference between nodes values
+            - "size" size of nodes is showing the difference between nodes values
+
+        Returns
+        -------
+        None
+        
+        """
+        if axes is None:
+            fig, axes = plt.subplots(figsize=(10, 10))
+
+        # Catching case of poor signal input
+        if signal is None:
+            signal = np.ones(self.N)
+        if np.allclose(signal, 0):
+            print("Signal is all zeros, plotting graph with default node size and color.")
+            signal = np.ones(self.N)
+
+        # Set node colors
+        if cmap is None:
+            node_color = [scolor[0] if nd > 0 else scolor[1] for nd in signal]
+        else:
+            if isinstance(cmap, str):
+                cmap = cm.get_cmap('viridis')
+
+            normalized_values = signal - signal.min()
+            if np.allclose(normalized_values, 0):
+                print("Signal is constant, normalizing to avoid division by zero.")
+                normalized_values = np.ones_like(signal)
+            else:
+                normalized_values /= normalized_values.max()
+            node_color = [cmap(normalized_values[k]) for k in range(len(normalized_values))]
+
+        node_values = scale * np.abs(signal)
+        if nodetype == "color":
+            # Draw nodes
+            nx.draw_networkx_nodes(self.G, pos=self.pos, node_color=signal, cmap=cmap, ax=axes, **kwds)
+            
+        elif nodetype == "size":
+            # Draw nodes
+            nx.draw_networkx_nodes(self.G, pos=self.pos, node_size=node_values, 
+                                   node_color=node_color, cmap=cmap, ax=axes, **kwds)
+
+        else:
+            print("Unsupported input ... plotting nodes with default size and color")
+        
+        if colorbar:
+            sm = plt.cm.ScalarMappable(cmap=cmap, norm=plt.Normalize(vmin=0, vmax=1))
+            plt.colorbar(sm)
+
 
     # Graph Theoric Properties
     def is_directed(self):
