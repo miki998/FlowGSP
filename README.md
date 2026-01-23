@@ -18,4 +18,3 @@ Run the command:
 - graph hilbert transform
 - phase random surrogate
 - stationarity
-

@@ -8,7 +8,7 @@ This directory contains introductory examples for getting started with the FlowG
 These examples introduce the core concepts of directed graph signal processing:
 
 1. **Graph Creation** - Creating and manipulating directed graphs
-2. **Graph Operators** - Understanding Laplacian, Adjacency, and Advection-Diffusion operators
+2. **Graph Operators** - Understanding Laplacian and Adjacency.
 3. **Signal Processing** - Basic graph signal operations
 4. **Filtering** - Simple filtering on graphs
 5. **Visualization** - Plotting graphs and signals

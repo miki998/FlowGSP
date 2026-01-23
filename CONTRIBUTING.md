@@ -161,17 +161,12 @@ digraph_GSP_framework/
 │   ├── graphs/           # Graph construction and management
 │   ├── operators/        # Graph operators
 │   ├── filters/          # Filtering implementations
-│   ├── sampling/         # Sampling strategies
-│   ├── learning/         # Graph learning algorithms
 │   ├── surrogates/       # Random surrogate generation
-│   ├── source_separation/# Signal separation
-│   ├── neural_net/       # Neural network models
 │   └── utils/            # Utility functions
 ├── tests/                # Unit tests
 ├── examples/             # Example scripts and notebooks
 │   ├── basic/            # Basic usage examples
 │   ├── advanced/         # Advanced techniques
-│   └── applications/     # Real-world applications
 ├── docs/                 # Documentation
 ├── data/                 # Sample datasets
 └── scripts/              # Utility scripts
