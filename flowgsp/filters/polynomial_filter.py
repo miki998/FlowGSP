@@ -1,5 +1,5 @@
 """
-Copyright © 2025 Chun Hei Michael Chan, MIPLab EPFL
+Copyright © 2026 Chun Hei Michael Chan, MIPLab EPFL
 """
 
 # TODO: Add implementation of "Design of polynomial approximated filters for signals on directed graphs"

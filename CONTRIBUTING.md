@@ -32,7 +32,7 @@ Enhancement suggestions are welcome! Please create an issue with:
    - Add tests for new functionality
    - Update documentation as needed
 4. **Run tests**: Ensure all tests pass with `python -m unittest discover -s tests/`
-5. **Run linting**: Use pre-commit hooks or run `pre-commit run --all-files`
+5. **Run linting**: Use pre-commit hooks or run `pre-commit run --all-files` (Not Available in this version)
 6. **Commit your changes**: Follow conventional commit format (see below)
 7. **Push to your fork** and submit a pull request
 
@@ -40,8 +40,8 @@ Enhancement suggestions are welcome! Please create an issue with:
 
 ```bash
 # Clone your fork
-git clone https://github.com/YOUR_USERNAME/digraph_GSP_framework.git
-cd digraph_GSP_framework
+git clone https://github.com/YOUR_USERNAME/FlowGSP.git
+cd FlowGSP
 
 # Create a virtual environment
 python -m venv venv

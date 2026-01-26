@@ -166,3 +166,22 @@ data/surrogates_data/
 
 # Media for images and videos demo
 media/
+
+# Generated figures and outputs
+examples/**/*.png
+examples/**/*.jpg
+examples/**/*.pdf
+!examples/**/README_figures/*.png
+
+# Jupyter notebook checkpoints
+**/.ipynb_checkpoints/
+
+# IDE specific
+.vscode/settings.json
+.idea/
+
+# Experiments framework data and results (keep .gitkeep files)
+experiments/**/data/*
+!experiments/**/data/.gitkeep
+experiments/**/results/*
+!experiments/**/results/.gitkeep
