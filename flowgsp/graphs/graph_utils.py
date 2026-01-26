@@ -1,14 +1,64 @@
 """
-Copyright © 2024 Chun Hei Michael Chan, MIPLab EPFL
+Copyright © 2025 Chun Hei Michael Chan, MIPLab EPFL
 """
 
-from flowgsp.utils import *
+from flowgsp.utils import np, nx, deepcopy
+
+
+def upsample_scheme_graph(A: np.ndarray, upsample_factor: int, weight: float = 1):
+    """
+    Upsample a graph by inserting edges between existing nodes.
+    This function takes an adjacency matrix of a graph and upsamples it by inserting
+    edges between existing nodes. The upsample factor determines how many new edges
+    are added between each pair of existing nodes.
+
+    Parameters
+    ----------
+    A : np.ndarray
+        The adjacency matrix of the graph to be upsampled.
+    upsample_factor : int
+        The factor by which to upsample the graph. For example, if upsample_factor is 2,
+        then one new edge will be added between each pair of existing nodes.
+
+    Returns
+    -------
+    A : np.ndarray
+        The upsampled adjacency matrix of the graph.
+
+    Notes
+    -----
+    This function is mainly used for binary graphs, but can also work with weighted graphs.
+    However, be aware of corner cases, such as small weights.
+    """
+    S = deepcopy(A)
+    N = S.shape[0]
+
+    for i in range(N):
+        for j in range(N):
+            if A[i, j] != 0 and A[j, i] == 0:
+                # If there is a directed edge from i to j, we add upsample_factor-1 edges
+                for k in range(1, upsample_factor):
+                    S = np.insert(S, len(S), 0, axis=1)
+                    S = np.insert(S, len(S), 0, axis=0)
+                    if k > 1:
+                        # Attach the new nodes among themselves
+                        S[-1, -2] = weight
+                        S[-2, -1] = weight
+                if upsample_factor > 1:  # Only attach back if extra nodes were added
+                    # Attach back to node i and j
+                    S[i, -upsample_factor + 1] = weight
+                    S[-upsample_factor + 1, i] = weight
+                    S[j, -1] = weight
+                    S[-1, j] = weight
+
+    return S
+
 
 def combine_graphs(A: np.ndarray, B: np.ndarray, nodes_listA: list, nodes_listB: list):
     """
     Combine graphs by union and adding edges between corresponding nodes.
-    Elements in nodes_listA and nodes_listB are indices of nodes to connect 
-    between graphs A and B respectively. Negative indexes refer to going from 
+    Elements in nodes_listA and nodes_listB are indices of nodes to connect
+    between graphs A and B respectively. Negative indexes refer to going from
     B to A while positive indexes refer to going from A to B.
 
     Parameters
@@ -17,10 +67,10 @@ def combine_graphs(A: np.ndarray, B: np.ndarray, nodes_listA: list, nodes_listB:
         Graph A adjacency matrix
     B : np.ndarray
         Graph B adjacency matrix
-    
+
     nodes_listA : list
         Nodes in A to connect
-    nodes_listB : list    
+    nodes_listB : list
         Nodes in B to connect
 
     Returns
@@ -43,7 +93,8 @@ def combine_graphs(A: np.ndarray, B: np.ndarray, nodes_listA: list, nodes_listB:
     ret = np.array(nx.adjacency_matrix(c).todense())
     return ret
 
-def get_cycles(G: nx.Graph, start_idx: int, max_depth: int, verbose:bool=True):
+
+def get_cycles(G: nx.Graph, start_idx: int, max_depth: int, verbose: bool = False):
     """
     Find all cycles reachable from a start node within a given maximum depth.
 
@@ -51,7 +102,7 @@ def get_cycles(G: nx.Graph, start_idx: int, max_depth: int, verbose:bool=True):
     ----------
     G : networkx.Graph
         The graph to search for cycles.
-    start_idx : int 
+    start_idx : int
         The index of the node to start the search from.
     max_depth : int
         The maximum depth to search for cycles.
@@ -79,12 +130,14 @@ def get_cycles(G: nx.Graph, start_idx: int, max_depth: int, verbose:bool=True):
     allpaths = findPaths(G, start_idx, max_depth)
 
     # 1. Search for cycles
-    if verbose: print(f"Finding cycles up to depth {max_depth} from node {start_idx}...")
+    if verbose:
+        print(f"Finding cycles up to depth {max_depth} from node {start_idx}...")
     paths_with_cycles = np.where(np.sum(np.array(allpaths) == start_idx, axis=1) > 1)[0]
     paths_with_cycles = np.array(allpaths)[paths_with_cycles]
 
     # 2. Trim the sequences to only keep the cycles
-    if verbose: print(f"Trimming paths to isolate cycles...")
+    if verbose:
+        print("Trimming paths to isolate cycles...")
     trimed_paths = []
     for k in range(len(paths_with_cycles)):
         cstart, cend = np.where(paths_with_cycles[k] == start_idx)[0][[0, 1]]
@@ -94,7 +147,8 @@ def get_cycles(G: nx.Graph, start_idx: int, max_depth: int, verbose:bool=True):
             trimed_paths.append(sequence)
 
     # 3. Remove repeating sequences
-    if verbose: print("Removing repeating cycles...")
+    if verbose:
+        print("Removing repeating cycles...")
     unique_cycles = []
     add_flag = True
     for p in trimed_paths:
@@ -106,62 +160,8 @@ def get_cycles(G: nx.Graph, start_idx: int, max_depth: int, verbose:bool=True):
         add_flag = True
 
     # 4. Verify that all inputs are indeed cycles and remove the last value to close the loop
-    if verbose: print("Verifying cycles and closing loops...")
+    if verbose:
+        print("Verifying cycles and closing loops...")
     unique_cycles = [p[:-1] for p in unique_cycles if p[0] == p[-1]]
-        
+
     return unique_cycles
-
-def var_generator(A:np.ndarray, active_nodes:list, amplitude_nodes:list, 
-                  time_nodes:list, n_iter:int,
-                  add_noise:bool, time_noise:list, 
-                  gamma:float=1):
-    """
-    Generates a sequence of directed graph signals over time using a graph spreading process.
-
-    Parameters
-    ----------
-        A (numpy.ndarray): The adjacency matrix of the graph.
-        active_nodes (list): A list of indices of the active nodes in the graph.
-        amplitude_nodes (list): A list of amplitudes to be applied to the active nodes.
-        time_nodes (list): A list of time steps at which the active node amplitudes should be applied.
-        n_iter (int): The number of time steps to simulate.
-        add_noise (bool): Whether to add Gaussian noise to the graph signals.
-        time_noise (list): A list of time steps at which Gaussian noise should be added.
-        gamma (float, optional): A scaling factor for the adjacency matrix. Defaults to 1.
-
-    Returns
-    -------
-        directed_logs (numpy.ndarray): A 2D array of shape (n_iter, graphdim) containing the sequence of directed graph signals.
-    """
-
-    graphdim = len(A)
-
-    # Initial condition: Implemented to be Gaussian Impulse
-    initial_cond = np.random.normal(0, 1, graphdim)
-    initial_directed = deepcopy(initial_cond)
-    directed_logs = [initial_directed]
-
-    # Defining GSO
-    muA = gamma * A
-
-    # Generating the diffusion processes
-    for _iter in range(n_iter - 1):
-
-        if (_iter in time_noise) and add_noise:
-            source_random = np.random.normal(0, 1, graphdim)
-        else:
-            source_random = np.zeros(graphdim)
-
-        # Spreading process
-        initial_directed = muA @ directed_logs[-1]
-
-        # Node Inherent process
-        initial_directed += source_random
-        if _iter in time_nodes:
-            for lidx, l in enumerate(active_nodes):
-                initial_directed[l] += amplitude_nodes[lidx]
-
-        directed_logs.append(initial_directed)
-
-    directed_logs = np.array(directed_logs)
-    return directed_logs
