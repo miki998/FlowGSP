@@ -19,7 +19,7 @@ possible on asymmetric graphs.
 → :class:`gyraph.operators.AdvectionDiffusion`, and the radial/angular kernels
 and smoothness measures documented in :doc:`tutorials/smoothness`.
 
-`arXiv:2606.16306 <https://arxiv.org/html/2606.16306v1>`_
+reference: `arXiv:2606.16306 <https://arxiv.org/html/2606.16306v1>`_
 
 Statistical Testing on Directed Graphs by Surrogate Data Generation
 ----------------------------------------------------------------------------------------------------
@@ -32,7 +32,19 @@ Generates surrogate data that leveraging stationary processes on directed graphs
 :class:`gyraph.surrogates.Stationary`, walked through in
 :doc:`tutorials/surrogates`.
 
-`IEEE Xplore <https://ieeexplore.ieee.org/document/11626552>`_
+reference: `IEEE Xplore <https://ieeexplore.ieee.org/document/11626552>`_
+
+Optimal Wiener-Filter Solutions for Denoising of Graph Signals on Directed Graphs
+----------------------------------------------------------------------------------------------------
+
+*Chun Hei Michael Chan, Alexandre Cionca, Dimitri Van De Ville*
+
+We propose a Wiener-filter solution for graph signals on directed graphs. Under various stationarity assumptions combining uncorrelated and correlated noise conditions, we show optimal solutions, including a successful proof-of-concept for temperature graph.
+
+→ :class:`gyraph.filters.WienerFilter` and walked through in
+:doc:`tutorials/filtering`.
+
+reference: `arXiv:2606.07876 <https://arxiv.org/pdf/2606.07876>`_
 
 Graph Signal Surrogate Generation for Statistical Testing of Covariance Structure on Directed Graphs
 ----------------------------------------------------------------------------------------------------
@@ -47,7 +59,7 @@ conventional approaches for undirected graphs and graph unaware.
 :class:`gyraph.surrogates.Stationary`, walked through in
 :doc:`tutorials/surrogates`.
 
-`arXiv:2608.01766 <https://arxiv.org/pdf/2608.01766>`_
+reference: `arXiv:2608.01766 <https://arxiv.org/pdf/2608.01766>`_
 
 Hilbert Transform on Graphs: Let There Be Phase
 -----------------------------------------------
@@ -61,7 +73,7 @@ signal, envelope and instantaneous frequency on the vertex set.
 → :class:`gyraph.filters.HilbertFilter` and
 :meth:`gyraph.filters.SpectralFilter.phase_shift`.
 
-`IEEE Xplore <https://ieeexplore.ieee.org/document/10962535>`_
+reference: `IEEE Xplore <https://ieeexplore.ieee.org/document/10962535>`_
 
 .. note::
 
