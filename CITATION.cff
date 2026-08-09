@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-title: 'FlowGSP: Directed Graph Signal Processing Framework'
+title: 'Gyraph: Directed Graph Signal Processing Framework'
 message: 'If you use this software, please cite it as below.'
 type: software
 authors:
@@ -10,19 +10,21 @@ authors:
 repository-code: 'https://github.com/miki998/digraph_GSP_framework'
 url: 'https://github.com/miki998/digraph_GSP_framework'
 abstract: >-
-  FlowGSP is a comprehensive Python library for directed graph signal
+  Gyraph is a comprehensive Python library for directed graph signal
   processing. It extends traditional graph signal processing concepts to
   handle directed graphs, enabling advanced analysis of network flows,
   asymmetric relationships, and directed interactions. The framework includes
-  modules for graph construction, operators (Laplacian, adjacency),
-  filtering (spectral, polynomial), and surrogate generation.
+  modules for graph construction, operators (Laplacian, advection-diffusion),
+  filtering (Wiener, spectral, polynomial), sampling strategies, graph
+  learning, signal separation, and surrogate generation.
 keywords:
   - graph signal processing
   - directed graphs
   - graph fourier transform
   - graph filtering
+  - graph learning
   - signal processing
   - network analysis
 license: MIT
-version: 0.0.1
-date-released: '2025-10-16'
+version: 0.0.2
+date-released: '2026-04-15'

@@ -1,12 +1,12 @@
 import unittest
 
 # Import the module to increase coverage
-from flowgsp.utils import unique_color_generator
+from gyraph.utils import unique_color_generator
 
 
 class TestPlot(unittest.TestCase):
     """
-    Test cases for flowgsp.filters.ChebyshevFilter class.
+    Test cases for gyraph.filters.ChebyshevFilter class.
     """
 
     def setUp(self):

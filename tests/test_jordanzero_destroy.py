@@ -1,7 +1,7 @@
 import unittest
 
-from flowgsp.utils import np
-from flowgsp.operators import (
+from gyraph.utils import np
+from gyraph.operators import (
     destroy_zero_eigenvals,
     destroy_jordan_blocks,
     destroy_jordan_blocks_laplacian,
@@ -31,6 +31,12 @@ class TestDestroyZeroEigenvals(unittest.TestCase):
         result = destroy_zero_eigenvals(A, prefer_nodes=prefer_nodes)
         D, _ = np.linalg.eig(result)
         self.assertTrue(np.all(np.abs(D) > 1e-6), "Zero eigenvalues were not destroyed")
+
+    # def test_find_best_pair(self):
+    #     """
+    #     Test the find_best_pair function.
+    #     """
+    #     raise NotImplementedError("Test for find_best_pair is not implemented yet.")
 
     def test_destroy_jordan_blocks(self):
         """

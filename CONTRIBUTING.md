@@ -1,4 +1,4 @@
-# Contributing to FlowGSP
+# Contributing to Gyraph
 
 Thank you for your interest in contributing to the Directed Graph Signal Processing Framework! This document provides guidelines for contributing to the project.
 
@@ -32,7 +32,7 @@ Enhancement suggestions are welcome! Please create an issue with:
    - Add tests for new functionality
    - Update documentation as needed
 4. **Run tests**: Ensure all tests pass with `python -m unittest discover -s tests/`
-5. **Run linting**: Use pre-commit hooks or run `pre-commit run --all-files` (Not Available in this version)
+5. **Run linting**: Use pre-commit hooks or run `pre-commit run --all-files`
 6. **Commit your changes**: Follow conventional commit format (see below)
 7. **Push to your fork** and submit a pull request
 
@@ -40,8 +40,8 @@ Enhancement suggestions are welcome! Please create an issue with:
 
 ```bash
 # Clone your fork
-git clone https://github.com/YOUR_USERNAME/FlowGSP.git
-cd FlowGSP
+git clone https://github.com/YOUR_USERNAME/digraph_GSP_framework.git
+cd digraph_GSP_framework
 
 # Create a virtual environment
 python -m venv venv
@@ -157,16 +157,21 @@ coverage report -m
 
 ```
 digraph_GSP_framework/
-├── flowgsp/              # Main package source code
+├── gyraph/              # Main package source code
 │   ├── graphs/           # Graph construction and management
 │   ├── operators/        # Graph operators
 │   ├── filters/          # Filtering implementations
+│   ├── sampling/         # Sampling strategies
+│   ├── learning/         # Graph learning algorithms
 │   ├── surrogates/       # Random surrogate generation
+│   ├── source_separation/# Signal separation
+│   ├── neural_net/       # Neural network models
 │   └── utils/            # Utility functions
 ├── tests/                # Unit tests
 ├── examples/             # Example scripts and notebooks
 │   ├── basic/            # Basic usage examples
 │   ├── advanced/         # Advanced techniques
+│   └── applications/     # Real-world applications
 ├── docs/                 # Documentation
 ├── data/                 # Sample datasets
 └── scripts/              # Utility scripts

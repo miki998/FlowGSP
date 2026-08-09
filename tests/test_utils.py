@@ -1,42 +1,108 @@
+import os
+import tempfile
 import unittest
 
-from flowgsp.utils import np
+import pandas as pd
+import torch
+
+from gyraph.utils import np
 
 # Import the module to increase coverage
-from flowgsp.utils import (
-    p_value,
+from gyraph.utils import (
     dirichlet,
     TV,
     sobolev,
     directed_variation,
+    save,
+    load,
+    save_json,
+    load_json,
 )
 
 
-class TestStats(unittest.TestCase):
+class TestUtils(unittest.TestCase):
     """
-    Test cases for flowgsp.utils.stats_utils functions.
+    Test cases for gyraph.utils functions.
     """
 
     def setUp(self):
-        """Set up test fixtures for stats_utils tests."""
-        self.test_graphs_path = "./tests/test_graphs/"
-        self.null_distrib = np.random.rand(1000)
-        self.statistic = 0.5
+        """Set up test fixtures for utils tests."""
+        self.signal = np.random.rand(10)
+        self.A = np.random.rand(10, 10)
+        self.L = np.random.rand(10, 10)
+        self.L = (self.L + self.L.T) / 2  # Make it symmetric
 
-    def test_p_value(self):
-        """
-        Test the p_value function.
-        #TODO: expand test cases
-        """
-        # Test cases for p_value function
-        self.assertIsInstance(p_value(self.null_distrib, self.statistic), float)
-        self.assertIsInstance(
-            p_value(self.null_distrib, self.statistic, two_tail=True), float
-        )
+    def test_save_json(self):
+        """Test the save function for JSON."""
+        data = {"key": "value"}
+        filename = "test_data.json"
+        save_json(filename, data)
+        loaded_data = load_json(filename)
+        self.assertEqual(data, loaded_data)
+
+
+class TestSerialization(unittest.TestCase):
+    """
+    Round-trip tests for the pickle and JSON serialization helpers,
+    including the non-JSON types handled by save_json/load_json.
+    """
+
+    def setUp(self):
+        self.tmpdir = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmpdir.cleanup)
+
+    def _path(self, name):
+        return os.path.join(self.tmpdir.name, name)
+
+    def test_pickle_roundtrip(self):
+        data = {"array": np.arange(5), "nested": [1, "two", 3.0]}
+        path = self._path("data.pkl")
+        save(path, data)
+        loaded = load(path)
+        np.testing.assert_array_equal(loaded["array"], data["array"])
+        self.assertEqual(loaded["nested"], data["nested"])
+
+    def test_json_ndarray_roundtrip(self):
+        arr = np.arange(6, dtype=np.float64).reshape(2, 3)
+        path = self._path("arr.json")
+        save_json(path, {"arr": arr})
+        loaded = load_json(path)
+        np.testing.assert_array_equal(loaded["arr"], arr)
+        self.assertEqual(loaded["arr"].dtype, arr.dtype)
+
+    def test_json_numpy_scalars(self):
+        path = self._path("scalars.json")
+        save_json(path, {"i": np.int64(3), "f": np.float32(1.5), "b": np.bool_(True)})
+        loaded = load_json(path)
+        self.assertEqual(loaded["i"], 3)
+        self.assertEqual(loaded["f"], 1.5)
+        self.assertEqual(loaded["b"], True)
+
+    def test_json_pandas_roundtrip(self):
+        df = pd.DataFrame({"a": [1, 2], "b": [3.0, 4.0]})
+        series = pd.Series({"x": 1, "y": 2})
+        path = self._path("pandas.json")
+        save_json(path, {"df": df, "series": series})
+        loaded = load_json(path)
+        pd.testing.assert_frame_equal(loaded["df"], df)
+        pd.testing.assert_series_equal(loaded["series"], series)
+
+    def test_json_torch_roundtrip(self):
+        tensor = torch.arange(4, dtype=torch.float64).reshape(2, 2)
+        path = self._path("torch.json")
+        save_json(path, {"t": tensor})
+        loaded = load_json(path)
+        self.assertIsInstance(loaded["t"], torch.Tensor)
+        self.assertTrue(torch.equal(loaded["t"], tensor))
+
+    def test_json_unserializable_raises(self):
+        with self.assertRaises(TypeError):
+            save_json(self._path("bad.json"), {"obj": object()})
+
 
 class TestMetrics(unittest.TestCase):
     """
-    Test cases for flowgsp.utils.metrics functions.
+    Test cases for gyraph.utils.metrics functions.
     """
 
     def setUp(self):

@@ -1,12 +1,12 @@
 import unittest
 
-import flowgsp
-from flowgsp.utils import load, op, p_value, np
+import gyraph
+from gyraph.utils import load, op, p_value, np
 
 
 class TestSurrogate(unittest.TestCase):
     """
-    Test cases for the Surrogate class in flowgsp.surrogates.surrogate module.
+    Test cases for the Surrogate class in gyraph.surrogates.surrogate module.
     """
 
     def setUp(self):
@@ -16,13 +16,13 @@ class TestSurrogate(unittest.TestCase):
         self.test_graphs_path = "./tests/test_graphs/"
 
         self.A = load(op.join(self.test_graphs_path, "bretagne_graph.pkl"))["struct"]
-        self.graph = flowgsp.graphs.Graph(adj_matrix=self.A)
+        self.graph = gyraph.graphs.Graph(adj_matrix=self.A)
         self.graph.set_operator("adjacency")
-        self.surrogates = flowgsp.surrogates.Surrogate(graph=self.graph)
+        self.surrogates = gyraph.surrogates.Surrogate(graph=self.graph)
 
-        self.graph_u = flowgsp.graphs.Graph(adj_matrix=self.A + self.A.T)
+        self.graph_u = gyraph.graphs.Graph(adj_matrix=self.A + self.A.T)
         self.graph_u.set_operator("adjacency")
-        self.surrogates_u = flowgsp.surrogates.Surrogate(graph=self.graph_u)
+        self.surrogates_u = gyraph.surrogates.Surrogate(graph=self.graph_u)
 
         self.N = self.graph.N
         self.seed = 42
@@ -33,9 +33,9 @@ class TestSurrogate(unittest.TestCase):
         """
         Test that ValueError is raised when graph operator is not set.
         """
-        graph_no_op = flowgsp.graphs.Graph(adj_matrix=self.A)
+        graph_no_op = gyraph.graphs.Graph(adj_matrix=self.A)
         with self.assertRaises(ValueError):
-            _ = flowgsp.surrogates.Surrogate(graph=graph_no_op)
+            _ = gyraph.surrogates.Surrogate(graph=graph_no_op)
 
     def test_p_value(self):
         """

@@ -1,7 +1,7 @@
 import unittest
 
-import flowgsp
-from flowgsp.utils import load, op, np
+import gyraph
+from gyraph.utils import load, op, np
 
 
 class TestStationarity(unittest.TestCase):
@@ -10,9 +10,9 @@ class TestStationarity(unittest.TestCase):
         self.test_graphs_path = "./tests/test_graphs/"
 
         self.A = load(op.join(self.test_graphs_path, "bretagne_graph.pkl"))["struct"]
-        self.graph = flowgsp.graphs.Graph(adj_matrix=self.A)
+        self.graph = gyraph.graphs.Graph(adj_matrix=self.A)
         self.graph.set_operator("adjacency")
-        self.stationarity = flowgsp.surrogates.Stationary(graph=self.graph)
+        self.stationarity = gyraph.surrogates.Stationary(graph=self.graph)
 
         np.random.seed(99)
         self.graph_samples = np.random.random((self.graph.N))

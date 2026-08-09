@@ -1,9 +1,9 @@
 import unittest
 
-from flowgsp.utils import load, op, np
-from flowgsp.graphs import Graph
+from gyraph.utils import load, op, np
+from gyraph.graphs import Graph
 
-from flowgsp.filters import HilbertFilter
+from gyraph.filters import HilbertFilter
 
 
 class TestHilbertFilterFunctions(unittest.TestCase):
@@ -13,7 +13,7 @@ class TestHilbertFilterFunctions(unittest.TestCase):
 
         self.A = load(op.join(self.test_graphs_path, "bretagne_graph.pkl"))["struct"]
         self.graph = Graph(adj_matrix=self.A)
-        self.graph.set_operator("adjacency")
+        self.graph.set_operator("advection_diffusion")
 
         self.hilbert = HilbertFilter(graph=self.graph)
 
@@ -46,6 +46,13 @@ class TestHilbertFilterFunctions(unittest.TestCase):
         """
         inst_freq = self.hilbert.graph_instant_frequency(self.signal)
         self.assertEqual(inst_freq.shape, self.signal.shape)
+
+    def test_demodulating_by_division(self):
+        """
+        Test the demodulation by division.
+        """
+        demodulated = self.hilbert.demodulating_by_division(self.signal)
+        self.assertEqual(demodulated.shape, self.signal.shape)
 
 
 if __name__ == "__main__":
