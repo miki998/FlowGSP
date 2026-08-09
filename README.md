@@ -5,6 +5,7 @@
 <p align="center">
 <a href="https://github.com/miki998/GyRAPH/actions"><img src="https://github.com/miki998/GyRAPH/workflows/Launch%20Unittest/badge.svg" alt="Tests"></a>
 <img src="./coverage.svg" alt="Coverage">
+<a href="https://gyraph.readthedocs.io/en/latest/"><img src="https://readthedocs.org/projects/gyraph/badge/?version=latest" alt="Documentation"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
 <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.9+-blue.svg" alt="Python 3.9+"></a>
 </p>
@@ -20,6 +21,9 @@ and stationarity tests — for hypothesis testing on directed graph signals.
 
 The library is built on NumPy, SciPy and NetworkX, and is designed to slot into
 existing analysis pipelines rather than replace them.
+
+📖 **Documentation: [gyraph.readthedocs.io](https://gyraph.readthedocs.io/)** — tutorials,
+full API reference, and the papers behind the methods.
 
 ### Key features
 
@@ -186,6 +190,21 @@ unit tests with a coverage badge, and packaging — run on every push to `main`
 Contributions are welcome; please read [CONTRIBUTING.md](CONTRIBUTING.md) for the
 branch/commit conventions, NumPy-style docstring requirements and review process, and
 [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) before opening an issue or pull request.
+
+## Research powered by GyRAPH
+
+GyRAPH is the reference implementation behind the following publications — the
+derivations, assumptions and validation for the code live there:
+
+- **Graph Diffusion-Advection Operator for Directed Graph Signal Processing** —
+  Chan, Cionca, Škultéty, Van De Ville.
+  [arXiv:2606.16306](https://arxiv.org/html/2606.16306v1) → `gyraph.operators.AdvectionDiffusion`
+- **Graph Signal Surrogate Generation for Statistical Testing of Covariance
+  Structure on Directed Graphs** — Chan, Cionca, Van De Ville.
+  [arXiv:2608.01766](https://arxiv.org/pdf/2608.01766) → `gyraph.surrogates`
+- **Hilbert Transform on Graphs: Let There Be Phase** — Chan, Cionca,
+  Van De Ville, *IEEE Signal Processing Letters*.
+  [IEEE Xplore](https://ieeexplore.ieee.org/document/11626552) → `gyraph.filters.HilbertFilter`
 
 ## Citation
 

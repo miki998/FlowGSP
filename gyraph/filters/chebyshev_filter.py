@@ -143,6 +143,7 @@ class ChebyshevFilter(PolynomialFilter):
 
     Spectral notes
     ──────────────
+
     Real spectrum:
         The bounding box is [λ_min, λ_max]; T_k is the standard Chebyshev
         polynomial on a real interval — the exact optimal Faber polynomial
@@ -304,6 +305,7 @@ class DualChebyshevFilter(ChebyshevFilter):
 
     Basis selection rationale
     ─────────────────────────
+
     GD   Real eigenvalues λR ⊂ [λ_min, λ_max].
          Standard Chebyshev T_k((P − c·I)/R) — exact Faber polynomial for
          the interval.  Vandermonde arguments (λR − c)/R ∈ [−1, 1].
@@ -334,14 +336,15 @@ class DualChebyshevFilter(ChebyshevFilter):
 
     Inheritance / compatibility
     ───────────────────────────
-    • self.powers_of_{D,A,P,Q,R} hold Chebyshev matrices with the same
+
+    - self.powers_of_{D,A,P,Q,R} hold Chebyshev matrices with the same
       attribute names as DualPolynomialFilter; polynomial_filter assembles
       the graph filter from them per filter_type (overridden below, since
       this class inherits from ChebyshevFilter, not DualPolynomialFilter).
-    • get_polynomial_coefficients (overridden below) fits the kernel on
+    - get_polynomial_coefficients (overridden below) fits the kernel on
       self.vandermonde_matrix_compose; apply is inherited from
       ChebyshevFilter and dispatches to the overridden polynomial_filter.
-    • vandermonde_matrix (monomial) from PolynomialFilter is NOT used;
+    - vandermonde_matrix (monomial) from PolynomialFilter is NOT used;
       vandermonde_matrix_compose calls _cheb_vdm directly.
 
     Spectral consistency (default scale_operator=None):

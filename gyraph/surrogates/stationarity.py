@@ -23,12 +23,14 @@ class Stationary:
     def exact_covariance(self, kernel: np.ndarray) -> np.ndarray:
         """
         Compute the exact covariance matrix from a given kernel
-        Parameters:
-        -----------
-        kernel: np.ndarray
+
+        Parameters
+        ----------
+        kernel : np.ndarray
             Kernel representing PSD
-        Returns:
-        --------
+
+        Returns
+        -------
         np.ndarray
             The exact covariance matrix.
         """
@@ -45,12 +47,14 @@ class Stationary:
     def estimate_covariance(self, samples: np.ndarray) -> np.ndarray:
         """
         Estimate the covariance matrix of the graph samples.
-        Parameters:
-        -----------
-        samples: np.ndarray
+
+        Parameters
+        ----------
+        samples : np.ndarray
             The graph samples to be checked for stationarity.
-        Returns:
-        --------
+
+        Returns
+        -------
         np.ndarray
             The estimated covariance matrix of the graph samples.
         """
@@ -65,14 +69,14 @@ class Stationary:
     def estimate_psd(self, est_covar: np.ndarray) -> np.ndarray:
         """
         Estimate the psd matrix of the graph samples.
-        Parameters:
-        -----------
-        est_covar: np.ndarray
+
+        Parameters
+        ----------
+        est_covar : np.ndarray
             The estimated covariance matrix of the graph samples.
-        Uinv: np.ndarray
-            The matrix of eigenvectors of the graph Laplacian.
-        Returns:
-        --------
+
+        Returns
+        -------
         np.ndarray
             The estimated psd matrix of the graph samples.
         """

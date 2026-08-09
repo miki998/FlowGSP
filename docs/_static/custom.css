@@ -1,0 +1,24 @@
+/* Small readability tweaks on top of sphinx_rtd_theme. */
+
+.wy-nav-content {
+    max-width: 62em;
+}
+
+/* Tables used for the "at a glance" overviews wrap instead of overflowing. */
+.wy-table-responsive table td,
+.wy-table-responsive table th {
+    white-space: normal;
+}
+
+/* Signatures are dense; give them some air. */
+dl.py.class > dt,
+dl.py.function > dt,
+dl.py.method > dt {
+    padding: 0.4em 0.6em;
+}
+
+/* De-emphasise the "Bases:" line under each class. */
+dl.py.class > dd > p:first-child {
+    color: #6b7280;
+    font-size: 90%;
+}

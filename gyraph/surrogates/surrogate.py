@@ -89,14 +89,17 @@ class Surrogate(Stationary):
         """
         Randomizes the given signal using the provided transformation matrices and a random seed.
 
-        Parameters:
+        Parameters
         ----------
-        signal (numpy.ndarray): The input signal to be randomized.
-        seed (int, optional): The seed for the random number generator. Default is 99.
+        signal : numpy.ndarray
+            The input signal to be randomized.
+        seed : int, optional
+            The seed for the random number generator. Default is 99.
 
-        Returns:
-        --------
-        numpy.ndarray: The randomized signal.
+        Returns
+        -------
+        numpy.ndarray
+            The randomized signal.
         """
         N = signal.shape[0]
         complex_randomizer = self.randomizer_phase(N, seed=seed, conj=True)

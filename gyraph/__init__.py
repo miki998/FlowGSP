@@ -10,5 +10,5 @@ from . import operators  # noqa: F401, F403
 
 from .constants import *  # noqa: F401, F403
 
-__version__ = "0.0.2"
-__release_date__ = "2026-04-15"
+__version__ = "1.0.0"
+__release_date__ = "2026-08-09"

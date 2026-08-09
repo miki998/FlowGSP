@@ -547,6 +547,7 @@ class FaberFilter(PolynomialFilter):
 
     Stability properties
     ────────────────────
+
     (1) Vandermonde conditioning (fixed):
         V[n, k] = Φ_k(λ_n) is bounded by 2 for all λ_n inside the
         circumscribed ellipse (Faber property + maximum principle).

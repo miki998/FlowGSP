@@ -88,12 +88,12 @@ class HilbertFilter(SpectralFilter):
         """
         Compute generalized instant frequency on graph support.
 
-        Parameters:
+        Parameters
         ----------
         signal : numpy.ndarray
             Input signal.
 
-        Returns:
+        Returns
         -------
         numpy.ndarray
             Generalized instant frequency on the graph.
