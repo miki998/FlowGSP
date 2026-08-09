@@ -7,8 +7,8 @@ authors:
     given-names: Chun Hei Michael
     email: miki998chan@gmail.com
     affiliation: 'EPFL - MIPLab'
-repository-code: 'https://github.com/miki998/digraph_GSP_framework'
-url: 'https://github.com/miki998/digraph_GSP_framework'
+repository-code: 'https://github.com/miki998/GyRAPH'
+url: 'https://github.com/miki998/GyRAPH'
 abstract: >-
   Gyraph is a comprehensive Python library for directed graph signal
   processing. It extends traditional graph signal processing concepts to
