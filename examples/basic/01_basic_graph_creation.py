@@ -4,7 +4,7 @@ Basic Graph Creation Example
 =============================
 
 This example demonstrates how to create and manipulate directed graphs
-using the FlowGSP framework.
+using the GyRAPH framework.
 
 Topics covered:
 - Creating graphs from adjacency matrices
@@ -20,7 +20,7 @@ import matplotlib.pyplot as plt
 
 def create_simple_graph():
     """Create a simple directed graph."""
-    # Note: FlowGSP import will work after package installation
+    # Note: GyRAPH import will work after package installation
     # For demonstration, we show the expected usage
     
     print("=" * 60)
@@ -42,8 +42,8 @@ def create_simple_graph():
     print(f"Number of edges: {np.sum(A)}")
     
     # Uncomment when package is installed:
-    # import flowgsp
-    # graph = flowgsp.graphs.Graph(adj_matrix=A)
+    # import gyraph
+    # graph = gyraph.graphs.Graph(adj_matrix=A)
     # print(f"\nGraph created with {graph.N} nodes and {graph.ne} edges")
     # print(f"Graph is directed: {graph.is_directed()}")
     
@@ -68,8 +68,8 @@ def create_weighted_graph():
     print(A_weighted)
     
     # Uncomment when package is installed:
-    # import flowgsp
-    # graph = flowgsp.graphs.Graph(adj_matrix=A_weighted)
+    # import gyraph
+    # graph = gyraph.graphs.Graph(adj_matrix=A_weighted)
     # print(f"\nWeighted graph created")
     # print(f"Edge weights range: [{np.min(A_weighted[A_weighted>0]):.2f}, "
     #       f"{np.max(A_weighted):.2f}]")
@@ -114,11 +114,11 @@ def visualize_graph():
     print("\nCreating a directed cycle graph with 5 nodes...")
     
     # Uncomment when package is installed:
-    # import flowgsp
+    # import gyraph
     # import networkx as nx
     # 
     # # Create graph
-    # graph = flowgsp.graphs.Graph(adj_matrix=A)
+    # graph = gyraph.graphs.Graph(adj_matrix=A)
     # 
     # # Convert to networkx for visualization
     # G = nx.DiGraph(A)
@@ -165,9 +165,9 @@ def graph_properties():
     print(f"Average degree: {n_edges / n_nodes:.2f}")
     
     # Uncomment when package is installed:
-    # import flowgsp
+    # import gyraph
     # 
-    # graph = flowgsp.graphs.Graph(adj_matrix=A)
+    # graph = gyraph.graphs.Graph(adj_matrix=A)
     # graph.compute_fourier_basis()
     # 
     # print(f"\nSpectral properties:")
@@ -179,10 +179,10 @@ def main():
     """Run all examples."""
     print("\n")
     print("*" * 60)
-    print(" FlowGSP - Basic Graph Creation Examples")
+    print(" GyRAPH - Basic Graph Creation Examples")
     print("*" * 60)
     print("\nThese examples demonstrate basic graph creation and manipulation.")
-    print("Uncomment the FlowGSP import statements after installing the package.")
+    print("Uncomment the GyRAPH import statements after installing the package.")
     print()
     
     # Run examples
@@ -196,8 +196,8 @@ def main():
     print("Examples Complete!")
     print("=" * 60)
     print("\nNext Steps:")
-    print("1. Install FlowGSP from repository root: cd ../.. && pip install -e .")
-    print("2. Uncomment the FlowGSP code in this file")
+    print("1. Install GyRAPH from repository root: cd ../.. && pip install -e .")
+    print("2. Uncomment the GyRAPH code in this file")
     print("3. Run this script again to see the full functionality")
     print("4. Explore more examples in the examples/ directory")
     print()

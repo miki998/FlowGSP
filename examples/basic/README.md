@@ -1,6 +1,6 @@
 # Basic Examples
 
-This directory contains introductory examples for getting started with the FlowGSP framework.
+This directory contains introductory examples for getting started with the GyRAPH framework.
 
 ## Examples Overview
 
@@ -19,10 +19,10 @@ Each example is self-contained and can be run independently:
 
 ```bash
 # If using Python scripts
-python 01_graph_creation.py
+python 01_basic_graph_creation.py
 
 # If using Jupyter notebooks
-jupyter notebook 01_graph_creation.ipynb
+jupyter notebook basics.ipynb
 ```
 
 ## Prerequisites
@@ -44,12 +44,11 @@ We recommend following the examples in order:
 
 ## Additional Resources
 
-- [Framework Documentation](../../docs/functionality.md)
-- [Tutorial Notebooks](../../tutorials/)
+- [Documentation](https://gyraph.readthedocs.io/)
+- [Tutorials](https://gyraph.readthedocs.io/en/latest/tutorials/index.html)
 - [Advanced Examples](../advanced/)
 
 ## Need Help?
 
-- Check the [FAQ](../../docs/FAQ.md)
-- Read the [API Reference](../../docs/api/)
-- Open an issue on GitHub
+- Read the [API Reference](https://gyraph.readthedocs.io/en/latest/reference/index.html)
+- Open an issue on [GitHub](https://github.com/miki998/GyRAPH/issues)
