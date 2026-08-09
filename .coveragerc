@@ -1,0 +1,30 @@
+[run]
+source = gyraph
+omit =
+    gyraph/neural_net/*
+    gyraph/source_separation/*
+    gyraph/utils/non_normality_analysis.py
+    gyraph/utils/hurst_analysis.py
+    gyraph/utils/plot_dynamics.py
+    gyraph/utils/plot_mesh.py
+    */tests/*
+    */test_*.py
+    */__pycache__/*
+    */venv/*
+    */env/*
+    setup.py
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise AssertionError
+    raise NotImplementedError
+    if __name__ == .__main__.:
+    if TYPE_CHECKING:
+    @abstractmethod
+    @abc.abstractmethod
+precision = 2
+
+[html]
+directory = htmlcov

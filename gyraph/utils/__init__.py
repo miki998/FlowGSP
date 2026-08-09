@@ -10,8 +10,6 @@ from .plot_mesh import *  # noqa: F401, F403
 from .plot_dynamics import *  # noqa: F401, F403
 from ..stats.stats_utils import *  # noqa: F401, F403
 from .graph_utils import *  # noqa: F401, F403
-from .non_normality_analysis import *  # noqa: F401, F403
-from .hurst_analysis import *  # noqa: F401, F403
 from .logging_config import (  # noqa: F401, E402
     setup_logger,
     get_logger,

@@ -1,7 +1,7 @@
 ## GyRAPH - a Framework for Directed Graph Signal Processing
 
 ![Tests](https://github.com/miki998/GyRAPH/workflows/Launch%20Unittest/badge.svg)
-<!-- [![Coverage](https://img.shields.io/badge/coverage-70%25-orange)](docs/coverage.md) -->
+![Coverage](./coverage.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 
