@@ -199,12 +199,16 @@ derivations, assumptions and validation for the code live there:
 - **Graph Diffusion-Advection Operator for Directed Graph Signal Processing** —
   Chan, Cionca, Škultéty, Van De Ville.
   [arXiv:2606.16306](https://arxiv.org/html/2606.16306v1) → `gyraph.operators.AdvectionDiffusion`
+- **Statistical Testing on Directed Graphs by Surrogate Data Generation** — Chan, Cionca, Van De Ville.
+  [IEEE Xplore](https://ieeexplore.ieee.org/document/11626552) → `gyraph.surrogates`
+- **Optimal Wiener-Filter Solutions for Denoising of Graph Signals on Directed Graphs** — Chan, Cionca, Van De Ville.
+  [arXiv:2606.07876](https://arxiv.org/pdf/2606.07876) → `gyraph.filters.WienerFilter`
 - **Graph Signal Surrogate Generation for Statistical Testing of Covariance
   Structure on Directed Graphs** — Chan, Cionca, Van De Ville.
   [arXiv:2608.01766](https://arxiv.org/pdf/2608.01766) → `gyraph.surrogates`
 - **Hilbert Transform on Graphs: Let There Be Phase** — Chan, Cionca,
   Van De Ville, *IEEE Signal Processing Letters*.
-  [IEEE Xplore](https://ieeexplore.ieee.org/document/11626552) → `gyraph.filters.HilbertFilter`
+  [IEEE Xplore](https://ieeexplore.ieee.org/document/10962535) → `gyraph.filters.HilbertFilter`
 
 ## Citation
 
