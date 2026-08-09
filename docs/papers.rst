@@ -21,6 +21,19 @@ and smoothness measures documented in :doc:`tutorials/smoothness`.
 
 `arXiv:2606.16306 <https://arxiv.org/html/2606.16306v1>`_
 
+Statistical Testing on Directed Graphs by Surrogate Data Generation
+----------------------------------------------------------------------------------------------------
+
+*Chun Hei Michael Chan, Alexandre Cionca, Dimitri Van De Ville*
+
+Generates surrogate data that leveraging stationary processes on directed graphs, improving statistical detection of irregular node relationships over conventional approaches for undirected graphs and graph unaware.
+
+→ :class:`gyraph.surrogates.Surrogate` and
+:class:`gyraph.surrogates.Stationary`, walked through in
+:doc:`tutorials/surrogates`.
+
+`IEEE Xplore <https://ieeexplore.ieee.org/document/11626552>`_
+
 Graph Signal Surrogate Generation for Statistical Testing of Covariance Structure on Directed Graphs
 ----------------------------------------------------------------------------------------------------
 
@@ -28,7 +41,7 @@ Graph Signal Surrogate Generation for Statistical Testing of Covariance Structur
 
 Generates surrogate data that preserves covariance structure on directed
 graphs, improving statistical detection of irregular node relationships over
-conventional approaches that first symmetrise the graph.
+conventional approaches for undirected graphs and graph unaware.
 
 → :class:`gyraph.surrogates.Surrogate` and
 :class:`gyraph.surrogates.Stationary`, walked through in
@@ -48,7 +61,7 @@ signal, envelope and instantaneous frequency on the vertex set.
 → :class:`gyraph.filters.HilbertFilter` and
 :meth:`gyraph.filters.SpectralFilter.phase_shift`.
 
-`IEEE Xplore <https://ieeexplore.ieee.org/document/11626552>`_
+`IEEE Xplore <https://ieeexplore.ieee.org/document/10962535>`_
 
 .. note::
 
