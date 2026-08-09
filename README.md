@@ -201,6 +201,9 @@ If you use GyRAPH in academic work, please cite it. Machine-readable metadata is
 }
 ```
 
+## Acknowledgment
+This project has been partly funded by the Swiss National Science Foundation under Sinergia grant 209470 “Precision mapping of electrical brain network dynamics with application to epilepsy”.
+
 ## License
 
 Released under the [MIT License](LICENSE).
